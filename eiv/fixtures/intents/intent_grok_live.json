@@ -1,0 +1,25 @@
+{
+  "_comment": "Authorization reconstruction for the REAL Grok/Bankr drain transaction on Base mainnet (0x6fc7eb7da9379383efda4253e4f599bbc3a99afed0468eabfe18484ec525739a, May 2026, ~$175K in DRB). The spec is deliberately maximally permissive \u2014 the wallet may touch the DRB token with no amount cap \u2014 except for the one constraint any owner would sign: outputs stay with the owner's wallet. The execution data EIV validates is the real on-chain transaction; only this authorization is reconstructed (the original Bankr authorization is not public). All addresses are the real ones: 0xb105... is the drained Grok/Bankr wallet, 0x3ec2... is the DRB token.",
+  "spec": {
+    "allowed_targets": [
+      "0x3ec2156d4c0a9cbdab4a016633b7bcf6a8d68ea2"
+    ],
+    "allowed_spenders": [],
+    "token_in": "0x3ec2156d4c0a9cbdab4a016633b7bcf6a8d68ea2",
+    "token_out": "0x3ec2156d4c0a9cbdab4a016633b7bcf6a8d68ea2",
+    "max_amount_in": "5000000000000000000000000000",
+    "min_amount_out": "0",
+    "recipient": "0xb1058c959987e3513600eb5b4fd82aeee2a0e4f9",
+    "deadline": 1999999999,
+    "require_zero_residual": true,
+    "bounded_approval": true,
+    "max_slippage_bps": 0
+  },
+  "signature": "0xc8f593c8d04e85289311ec48256b188288be5f84b326110ad9e9fcd7819fef9046165d359bcc56f7dd9765e2324f9b5805febe80ffb6f5347288120dbed72fcb1b",
+  "signer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+  "domain": {
+    "name": "EIV",
+    "version": "1",
+    "chainId": 11155111
+  }
+}

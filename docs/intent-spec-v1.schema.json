@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eiv.dev/schemas/intent-spec/v1.0",
+  "title": "EIV IntentSpec v1.0",
+  "description": "Signature-authorized intent specification for EIV validation. Defines the constraints an AI agent's on-chain execution must satisfy.",
+  "type": "object",
+  "required": [
+    "allowed_targets",
+    "allowed_spenders",
+    "token_in",
+    "token_out",
+    "max_amount_in",
+    "min_amount_out",
+    "recipient",
+    "deadline"
+  ],
+  "properties": {
+    "spec_version": {
+      "type": "string",
+      "const": "1.0",
+      "default": "1.0",
+      "description": "Schema version. Must be '1.0' for this schema."
+    },
+    "allowed_targets": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^0x[0-9a-fA-F]{40}$"
+      },
+      "description": "Contracts the agent may call during execution (A:Target check)."
+    },
+    "allowed_spenders": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^0x[0-9a-fA-F]{40}$"
+      },
+      "description": "Addresses the agent may approve as ERC-20 spenders (C:AuthExpansion check)."
+    },
+    "token_in": {
+      "type": "string",
+      "pattern": "^0x[0-9a-fA-F]{40}$",
+      "description": "Input token contract address. Use 0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee for native ETH (EIP-7528)."
+    },
+    "token_out": {
+      "type": "string",
+      "pattern": "^0x[0-9a-fA-F]{40}$",
+      "description": "Output token contract address (B:Recipient check verifies output goes to the authorized recipient)."
+    },
+    "max_amount_in": {
+      "type": "string",
+      "pattern": "^(0x[0-9a-fA-F]+|[0-9]+|UNLIMITED)$",
+      "description": "Maximum input amount (uint256 as string). D:Amount check."
+    },
+    "min_amount_out": {
+      "type": "string",
+      "pattern": "^(0x[0-9a-fA-F]+|[0-9]+|UNLIMITED)$",
+      "description": "Minimum output amount (uint256 as string). D:Amount check."
+    },
+    "recipient": {
+      "type": "string",
+      "pattern": "^0x[0-9a-fA-F]{40}$",
+      "description": "Authorized recipient for output tokens (B:Recipient check)."
+    },
+    "deadline": {
+      "type": ["integer", "string"],
+      "description": "Unix timestamp after which execution is invalid (E:Deadline check)."
+    },
+    "require_zero_residual": {
+      "type": "boolean",
+      "default": true,
+      "description": "If true, all allowances must be zeroed after execution (F:Residual check)."
+    },
+    "bounded_approval": {
+      "type": "boolean",
+      "default": true,
+      "description": "If true, approve amounts must not exceed max_amount_in (C:AuthExpansion check)."
+    },
+    "max_slippage_bps": {
+      "type": ["integer", "null"],
+      "default": null,
+      "description": "Maximum slippage in basis points. Null triggers G:SpecQuality warning."
+    }
+  },
+  "additionalProperties": false
+}

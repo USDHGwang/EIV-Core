@@ -1,0 +1,27 @@
+{
+  "_comment": "Reconstruction of the May 2026 Grok/Bankr prompt-injection drain (~$175K) as an EIV scenario. The signed authorization: swap at most 175,000 USDC for WETH via the authorized router on Base, output to the user's wallet, bounded approval, allowance zeroed after execution. Token/router addresses are the real Base mainnet contracts; user/attacker addresses are illustrative.",
+  "spec": {
+    "allowed_targets": [
+      "0x2626664c2603336e57b271c5c0b26f421741e481"
+    ],
+    "allowed_spenders": [
+      "0x2626664c2603336e57b271c5c0b26f421741e481"
+    ],
+    "token_in": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+    "token_out": "0x4200000000000000000000000000000000000006",
+    "max_amount_in": "175000000000",
+    "min_amount_out": "60000000000000000000",
+    "recipient": "0x7a3f9e1c5b2d8a640f11c39e8d4b7a25c6e09314",
+    "deadline": 1778500000,
+    "require_zero_residual": true,
+    "bounded_approval": true,
+    "max_slippage_bps": 50
+  },
+  "signature": "0x7436c7c42f0e3a7ad3a619aa642ba2ce4287c6a12ee8ddc9ce2ad33dd572bb871c63d62bc065f9ed845dc303a22342412fbab11c2fb3b562d11108b5c759b0381c",
+  "signer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+  "domain": {
+    "name": "EIV",
+    "version": "1",
+    "chainId": 11155111
+  }
+}

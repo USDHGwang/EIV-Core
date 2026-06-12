@@ -1,0 +1,26 @@
+{
+  "spec": {
+    "allowed_targets": [
+      "0xRouter"
+    ],
+    "allowed_spenders": [
+      "0xRouter"
+    ],
+    "token_in": "USDC",
+    "token_out": "WETH",
+    "max_amount_in": "100",
+    "min_amount_out": "90",
+    "recipient": "0xUser",
+    "deadline": 1000,
+    "require_zero_residual": true,
+    "bounded_approval": true,
+    "max_slippage_bps": 50
+  },
+  "signer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+  "signature": "0xd5f0541cfb58af6ed287708f61e6a2b1b26ec87b5de0c28f4f2d8a1a55d8a0933e18031aacc2acfca1b0ad809f906eff1f6c667eb83deffd67af17e2b69b8f431c",
+  "domain": {
+    "name": "EIV",
+    "version": "1",
+    "chainId": 11155111
+  }
+}

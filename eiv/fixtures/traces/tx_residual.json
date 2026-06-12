@@ -1,0 +1,10 @@
+{
+  "_note": "Unbounded approve, residual allowance left after execution -> FAIL (C:AuthExpansion over-approve + F:Residual)",
+  "calls_to": ["0xRouter"],
+  "approvals": [{"spender": "0xRouter", "amount": "UNLIMITED"}],
+  "transfers_out": [{"token": "WETH", "to": "0xUser", "amount": "95"}],
+  "amount_in": "100",
+  "amount_out": "95",
+  "block_ts": 900,
+  "residual_allowances": {"0xRouter": "UNLIMITED"}
+}

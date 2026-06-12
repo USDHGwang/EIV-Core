@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eiv-core"
+version = "0.3.0"
+description = "EIV — Execution-Integrity Validator (off-chain validator service for ERC-8004)"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+# Zero third-party dependencies (standard library only, including the cryptography)
+dependencies = []
+
+[project.optional-dependencies]
+# Only needed for the MCP tool (python -m eiv.mcp_tool)
+mcp = ["mcp"]
+
+[tool.setuptools]
+packages = ["eiv"]
+
+[tool.setuptools.package-data]
+eiv = ["fixtures/**/*.json", "static/*.html"]

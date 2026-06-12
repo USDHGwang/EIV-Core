@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# EIV runtime output (validation records; machine-local, regenerable)
+eiv/runs/
+
+# Env / secrets (never commit keys)
+.env
+
+# Local tooling
+.claude/
+
+# Virtualenv
+.venv/
+venv/
+env/
+
+# Tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node (contracts/ compile tooling)
+node_modules/
+package-lock.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

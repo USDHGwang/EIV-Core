@@ -1,0 +1,10 @@
+{
+  "_note": "Calls an unauthorized target and sends output to an attacker -> FAIL (A:Target + C:AuthExpansion + B:Recipient)",
+  "calls_to": ["0xEvil"],
+  "approvals": [{"spender": "0xEvil", "amount": "100"}],
+  "transfers_out": [{"token": "WETH", "to": "0xAttacker", "amount": "95"}],
+  "amount_in": "100",
+  "amount_out": "95",
+  "block_ts": 900,
+  "residual_allowances": {"0xEvil": "0"}
+}

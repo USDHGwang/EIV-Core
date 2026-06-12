@@ -1,0 +1,8 @@
+# 統一行尾為 LF（repo 內與 checkout 都 LF），消除 Windows CRLF 警告、利於 Linux 部署
+* text=auto eol=lf
+
+# 二進位（不做行尾轉換）
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary

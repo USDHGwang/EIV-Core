@@ -1,0 +1,10 @@
+{
+  "_note": "Clean execution: only ROUTER, exact approve, output to USER, zero residual -> PASS",
+  "calls_to": ["0xRouter"],
+  "approvals": [{"spender": "0xRouter", "amount": "100"}],
+  "transfers_out": [{"token": "WETH", "to": "0xUser", "amount": "95"}],
+  "amount_in": "100",
+  "amount_out": "95",
+  "block_ts": 900,
+  "residual_allowances": {"0xRouter": "0"}
+}
