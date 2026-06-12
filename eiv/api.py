@@ -59,8 +59,10 @@ from eiv.reputation import compute_reputation
 from eiv.store import SqliteValidationStore, ValidationStore
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
+_PROJECT_ROOT = os.path.dirname(_HERE)
 _DEFAULT_STORE_DIR = os.path.join(_HERE, "runs")
 _STATIC_INDEX = os.path.join(_HERE, "static", "index.html")
+_DASHBOARD_DIR = os.path.join(_PROJECT_ROOT, "dashboard")
 _SCENARIOS_FILE = os.path.join(_HERE, "fixtures", "scenarios.json")
 _INTENTS_DIR = os.path.join(_HERE, "fixtures", "intents")
 
@@ -255,6 +257,10 @@ class _Handler(BaseHTTPRequestHandler):
                         all_recs = store.list()
                         records = [r for r in all_recs if r.get("signer") == agent_addr]
                     self._send(200, compute_reputation(records, agent_addr))
+            elif path == "/dashboard" or path == "/dashboard/index.html":
+                self._send_html(os.path.join(_DASHBOARD_DIR, "index.html"))
+            elif path == "/dashboard/index_zh.html":
+                self._send_html(os.path.join(_DASHBOARD_DIR, "index_zh.html"))
             else:
                 self._send(404, {"error": f"unknown path {path}"})
         except Exception as e:  # noqa: BLE001 — keep one request's error from taking down the server
@@ -352,8 +358,9 @@ def main(argv: list | None = None) -> None:
     info = describe_service(service)
     server = make_server(service, args.host, args.port)
     print(f"EIV validator started -> http://{args.host}:{args.port}")
-    print(f"  console : http://{args.host}:{args.port}/")
-    print("  api     : POST /validate   GET /validations   GET /validations/{id}")
+    print(f"  console   : http://{args.host}:{args.port}/")
+    print(f"  dashboard : http://{args.host}:{args.port}/dashboard")
+    print("  api       : POST /validate   GET /validations   GET /validations/{id}")
     print("            GET /scenarios   GET /status        GET /healthz")
     for name, comp in info["components"].items():
         mode = comp.get("mode") or comp.get("scheme") or ""

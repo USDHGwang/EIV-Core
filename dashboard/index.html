@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EIV Dashboard</title>
+<style>
+  :root {
+    --sidebar: #1a1a1a;
+    --bg: #f5f5f7;
+    --card: #ffffff;
+    --border: #e8e8ed;
+    --text: #1d1d1f;
+    --muted: #86868b;
+    --pass: #30c85a;
+    --fail: #ff3b30;
+    --warn: #ff9500;
+    --info: #007aff;
+    --purple: #af52de;
+    --mono: 'SF Mono','Menlo','Consolas',monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    font-size: 16px;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    overflow: hidden;
+  }
+
+  /* ====== SIDEBAR ====== */
+  aside {
+    background: var(--sidebar);
+    color: #f5f5f7;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  aside header {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+  }
+  aside header h1 {
+    font-size: 1.35rem; font-weight: 700;
+    display: flex; align-items: baseline; gap: 6px;
+    letter-spacing: -0.3px;
+  }
+  aside header h1 span { font-weight: 400; color: #98989e; }
+  aside header .version { font-size: 0.75rem; color: #6e6e78; margin-top: 2px; }
+  aside .meta {
+    margin-top: 10px; font-size: 0.85rem; color: #98989e;
+    display: flex; align-items: center; gap: 8px;
+  }
+  aside .meta .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--pass);
+    box-shadow: 0 0 8px rgba(48,200,90,.5);
+    animation: pulse-dot 2.5s ease-in-out infinite;
+  }
+  aside .meta .dot.off {
+    background: var(--fail);
+    box-shadow: 0 0 8px rgba(255,59,48,.4);
+    animation: none;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .5; }
+  }
+
+  /* tabs */
+  aside .tabs {
+    display: flex; gap: 0; padding: 0 16px;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+  }
+  aside .tabs button {
+    flex: 1; padding: 12px 0; font-size: 0.82rem; font-weight: 600;
+    color: #98989e; background: none; border: none; cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  aside .tabs button.active {
+    color: #f5f5f7;
+    border-bottom-color: var(--info);
+  }
+  aside .tabs button:hover { color: #ccc; }
+
+  aside .list-wrap {
+    flex: 1; overflow-y: auto; padding: 12px 0;
+  }
+  aside .list-wrap h2 {
+    font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.8px;
+    color: #6e6e78; padding: 8px 24px 12px; font-weight: 600;
+  }
+  .list-item {
+    margin: 2px 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    border-radius: 16px;
+    transition: background 0.2s ease, transform 0.15s ease;
+  }
+  .list-item:hover {
+    background: rgba(255,255,255,.05);
+    transform: translateX(2px);
+  }
+  .list-item.active {
+    background: rgba(255,255,255,.08);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+  }
+  .list-item .row1 {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 4px;
+  }
+  .list-item .id { font-size: 0.9rem; font-weight: 600; }
+
+  .badge {
+    font-size: 0.7rem; font-weight: 700; padding: 3px 8px; border-radius: 6px;
+    letter-spacing: 0.3px; text-transform: uppercase;
+  }
+  .badge.PASS { background: rgba(48,200,90,.15); color: #4ae27a; }
+  .badge.FAIL { background: rgba(255,59,48,.15); color: #ff6b60; }
+  .badge.APPROVE { background: rgba(48,200,90,.15); color: #4ae27a; }
+  .badge.REJECT { background: rgba(255,59,48,.15); color: #ff6b60; }
+  .list-item .sub {
+    font-size: 0.78rem; color: #8e8e93;
+    display: flex; gap: 8px; align-items: center;
+  }
+
+  /* reputation sidebar card */
+  .rep-card {
+    margin: 8px 12px; padding: 14px 16px;
+    background: rgba(255,255,255,.03);
+    border-radius: 16px; border: 1px solid rgba(255,255,255,.06);
+  }
+  .rep-card .agent { font-family: var(--mono); font-size: 0.75rem; color: #98989e; word-break: break-all; }
+  .rep-card .score-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+  .rep-card .score {
+    font-size: 2rem; font-weight: 700; letter-spacing: -1px;
+  }
+  .rep-card .score.low { color: #4ae27a; }
+  .rep-card .score.medium { color: var(--warn); }
+  .rep-card .score.high { color: #ff6b60; }
+  .rep-card .score.unknown { color: #98989e; }
+  .rep-card .risk {
+    font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 999px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .rep-card .risk.low { background: rgba(48,200,90,.12); color: #4ae27a; }
+  .rep-card .risk.medium { background: rgba(255,149,0,.12); color: var(--warn); }
+  .rep-card .risk.high { background: rgba(255,59,48,.12); color: #ff6b60; }
+  .rep-card .risk.unknown { background: rgba(255,255,255,.06); color: #98989e; }
+  .rep-card .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; }
+  .rep-card .stat { font-size: 0.72rem; color: #8e8e93; }
+  .rep-card .stat b { color: #ccc; }
+
+  /* rep category breakdown */
+  .rep-cats { margin-top: 10px; }
+  .rep-cats .cat-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; font-size: 0.75rem; }
+  .rep-cats .cat-row .cat-name { color: #8e8e93; }
+  .rep-cats .cat-row .cat-count { font-weight: 600; color: #ff6b60; font-family: var(--mono); }
+  .rep-cats .bar-bg { height: 3px; background: rgba(255,255,255,.08); border-radius: 2px; margin-top: 2px; }
+  .rep-cats .bar-fill { height: 100%; background: var(--fail); border-radius: 2px; }
+
+  /* ====== MAIN ====== */
+  main {
+    overflow-y: auto;
+    padding: 36px 44px 60px;
+    display: flex; flex-direction: column; gap: 24px;
+  }
+  .empty-state {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: var(--muted); gap: 12px;
+  }
+  .empty-state .icon { font-size: 3rem; opacity: .25; }
+  .empty-state p { font-size: 1.05rem; font-weight: 500; }
+  .empty-state span { font-size: 0.85rem; opacity: .6; }
+
+  /* verdict banner */
+  .verdict-banner {
+    display: flex; align-items: center; gap: 14px;
+    font-size: 1.3rem; font-weight: 700;
+    padding: 24px 32px; border-radius: 20px;
+    transition: all 0.3s ease;
+  }
+  .verdict-banner.PASS {
+    background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf6 100%);
+    color: #065f46;
+    box-shadow: 0 1px 3px rgba(16,185,129,.06), 0 0 0 1px rgba(16,185,129,.08);
+  }
+  .verdict-banner.FAIL {
+    background: linear-gradient(135deg, #fef2f2 0%, #fff5f5 100%);
+    color: #991b1b;
+    box-shadow: 0 1px 3px rgba(239,68,68,.06), 0 0 0 1px rgba(239,68,68,.08);
+  }
+  .verdict-banner .verdict-icon { font-size: 2rem; }
+  .verdict-banner .sub {
+    font-size: 0.85rem; color: var(--muted); font-weight: 400; margin-left: auto;
+  }
+
+  /* gate banner */
+  .gate-banner {
+    display: flex; align-items: center; gap: 14px;
+    font-size: 1.3rem; font-weight: 700;
+    padding: 24px 32px; border-radius: 20px;
+  }
+  .gate-banner.APPROVE {
+    background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf6 100%);
+    color: #065f46;
+    box-shadow: 0 1px 3px rgba(16,185,129,.06), 0 0 0 1px rgba(16,185,129,.08);
+  }
+  .gate-banner.REJECT {
+    background: linear-gradient(135deg, #fef2f2 0%, #fff5f5 100%);
+    color: #991b1b;
+    box-shadow: 0 1px 3px rgba(239,68,68,.06), 0 0 0 1px rgba(239,68,68,.08);
+  }
+
+  /* card */
+  .card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 24px 28px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 0 0 1px rgba(0,0,0,.03);
+    transition: box-shadow 0.3s ease;
+  }
+  .card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,.06), 0 0 0 1px rgba(0,0,0,.04);
+  }
+  .card h3 {
+    font-size: 1rem; font-weight: 700; color: var(--text);
+    margin-bottom: 18px; letter-spacing: -0.2px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  /* auth verified badge */
+  .auth-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 0.82rem; font-weight: 600;
+    padding: 6px 14px; border-radius: 999px;
+  }
+  .auth-badge.verified {
+    background: #ecfdf5; color: #065f46;
+    border: 1px solid rgba(16,185,129,.2);
+  }
+  .auth-badge.unverified {
+    background: #fff8f0; color: #92400e;
+    border: 1px solid rgba(245,158,11,.2);
+  }
+  .auth-badge .shield { font-size: 1rem; }
+
+  /* intent grid */
+  .intent-grid {
+    display: grid; grid-template-columns: 160px 1fr; gap: 4px 14px;
+    font-size: 0.88rem;
+  }
+  .intent-grid .k { color: var(--muted); font-weight: 500; padding: 6px 0; }
+  .intent-grid .v {
+    font-family: var(--mono); font-size: 0.8rem; word-break: break-all;
+    color: #555; padding: 6px 0;
+  }
+
+  /* violations */
+  .no-violations { font-size: 0.95rem; color: var(--pass); font-weight: 500; }
+  .violation {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 14px 0; border-bottom: 1px solid #f0f0f2;
+    transition: background 0.15s ease;
+  }
+  .violation:last-child { border-bottom: none; }
+  .violation .sev {
+    font-size: 0.72rem; font-weight: 700; padding: 4px 10px; border-radius: 8px;
+    white-space: nowrap; letter-spacing: 0.3px;
+  }
+  .sev.FAIL { background: #fef2f2; color: #dc2626; }
+  .sev.WARN-SAFETY { background: #fff8f0; color: #d97706; }
+  .sev.WARN-SPEC { background: #f8f5ff; color: #7c3aed; }
+  .sev.INFO { background: #f0f9ff; color: #0284c7; }
+  .violation .cat { font-size: 0.88rem; color: #666; font-weight: 600; min-width: 140px; }
+  .violation .detail { font-size: 0.9rem; color: var(--text); line-height: 1.5; }
+
+  /* attestation grid */
+  .attest-grid {
+    display: grid; grid-template-columns: 130px 1fr; gap: 6px 14px;
+    font-size: 0.9rem;
+  }
+  .attest-grid .k { color: var(--muted); font-weight: 500; }
+  .attest-grid .v {
+    font-family: var(--mono); font-size: 0.8rem; word-break: break-all; color: #555;
+  }
+  .attest-grid .v a { color: var(--info); text-decoration: none; }
+  .attest-grid .v a:hover { text-decoration: underline; }
+  .dryrun-tag {
+    display: inline-block; font-size: 0.7rem; font-weight: 700;
+    background: #f0f0f5; color: #86868b;
+    padding: 2px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .onchain-tag {
+    display: inline-block; font-size: 0.7rem; font-weight: 700;
+    background: #ecfdf5; color: #059669;
+    padding: 2px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  /* Gate form */
+  .gate-form {
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .gate-form label {
+    font-size: 0.82rem; font-weight: 600; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .gate-form textarea {
+    width: 100%; min-height: 120px;
+    font-family: var(--mono); font-size: 0.78rem;
+    padding: 14px; border-radius: 14px;
+    border: 1px solid var(--border);
+    background: #fafafa; color: var(--text);
+    resize: vertical; outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .gate-form textarea:focus {
+    border-color: var(--info);
+    box-shadow: 0 0 0 3px rgba(0,122,255,.1);
+  }
+  .gate-form .run-btn {
+    align-self: flex-start;
+    padding: 12px 32px; border-radius: 999px;
+    background: var(--info); color: #fff; font-weight: 700;
+    font-size: 0.9rem; border: none; cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .gate-form .run-btn:hover { background: #0066d6; }
+  .gate-form .run-btn:active { transform: scale(0.97); }
+  .gate-form .run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* rep input */
+  .rep-input-row {
+    display: flex; gap: 12px; align-items: center;
+  }
+  .rep-input-row input {
+    flex: 1; padding: 12px 16px; border-radius: 14px;
+    border: 1px solid var(--border);
+    font-family: var(--mono); font-size: 0.85rem;
+    background: #fafafa; outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .rep-input-row input:focus {
+    border-color: var(--info);
+    box-shadow: 0 0 0 3px rgba(0,122,255,.1);
+  }
+  .rep-input-row button {
+    padding: 12px 24px; border-radius: 999px;
+    background: var(--info); color: #fff; font-weight: 700;
+    font-size: 0.85rem; border: none; cursor: pointer;
+    white-space: nowrap;
+  }
+  .rep-input-row button:hover { background: #0066d6; }
+  .rep-input-row button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* rep detail */
+  .rep-detail { margin-top: 20px; }
+  .rep-score-big { font-size: 3rem; font-weight: 700; letter-spacing: -2px; }
+  .rep-score-big.low { color: var(--pass); }
+  .rep-score-big.medium { color: var(--warn); }
+  .rep-score-big.high { color: var(--fail); }
+  .rep-score-big.unknown { color: var(--muted); }
+  .rep-stats-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px;
+  }
+  .rep-stat {
+    background: #f9f9fb; border-radius: 14px; padding: 16px; text-align: center;
+  }
+  .rep-stat .num { font-size: 1.5rem; font-weight: 700; }
+  .rep-stat .lbl { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+  .recent-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 0; border-bottom: 1px solid #f0f0f2;
+    font-size: 0.85rem;
+  }
+  .recent-item:last-child { border-bottom: 0; }
+
+  /* unchecked list */
+  .unchecked-list { font-size: 0.85rem; color: var(--muted); }
+  .unchecked-list li { margin: 4px 0; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #d5d5da; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #bbb; }
+
+  @media (max-width: 800px) {
+    body { grid-template-columns: 1fr; }
+    aside { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<aside>
+  <header>
+    <h1>EIV <span>Dashboard</span></h1>
+    <div class="version" id="api-version">v—</div>
+    <div class="meta">
+      <span class="dot" id="status-dot"></span>
+      <span id="status-text">Connecting…</span>
+      <a href="/dashboard/index_zh.html" style="margin-left:auto;font-size:0.78rem;color:#98989e;text-decoration:none;" title="Switch to Chinese">中文</a>
+    </div>
+  </header>
+  <div class="tabs">
+    <button class="active" data-tab="validations">Validations</button>
+    <button data-tab="gate">GATE</button>
+    <button data-tab="reputation">Reputation</button>
+  </div>
+  <div class="list-wrap" id="sidebar-content">
+    <h2>Validations</h2>
+    <div id="list"></div>
+  </div>
+</aside>
+
+<main id="detail-panel">
+  <div class="empty-state">
+    <div class="icon">☰</div>
+    <p>Select a validation or run a scenario</p>
+    <span>Choose an entry from the sidebar to inspect</span>
+  </div>
+</main>
+
+<script>
+const API = '';
+let currentId = null;
+let currentTab = 'validations';
+let statusInfo = null;
+let gateResult = null;
+
+/* ---------- API helpers ---------- */
+async function apiGet(path) {
+  const r = await fetch(`${API}${path}`);
+  const body = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(body.error || `${path} -> ${r.status}`);
+  return body;
+}
+async function apiPost(path, data) {
+  const r = await fetch(`${API}${path}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  const body = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(body.error || `${path} -> ${r.status}`);
+  return body;
+}
+
+/* ---------- Health ---------- */
+async function checkHealth() {
+  try {
+    const r = await apiGet('/status');
+    statusInfo = r;
+    document.getElementById('status-dot').className = 'dot';
+    document.getElementById('status-text').textContent = 'Connected';
+    document.getElementById('api-version').textContent = 'v' + (r.version || '?');
+    return true;
+  } catch(e) {
+    document.getElementById('status-dot').className = 'dot off';
+    document.getElementById('status-text').textContent = 'Unreachable';
+    return false;
+  }
+}
+
+/* ---------- Tabs ---------- */
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  currentId = null;
+  gateResult = null;
+
+  const wrap = document.getElementById('sidebar-content');
+  if (tab === 'validations') {
+    wrap.innerHTML = '<h2>Validations</h2><div id="list"></div>';
+    loadList().then(() => {
+      const first = document.querySelector('#list .list-item');
+      if (first) first.click();
+    });
+  } else if (tab === 'gate') {
+    wrap.innerHTML = '<h2>GATE</h2>';
+    renderGatePanel();
+  } else if (tab === 'reputation') {
+    wrap.innerHTML = '<h2>Reputation</h2>';
+    renderReputationPanel();
+  }
+}
+
+document.querySelectorAll('.tabs button').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+
+/* ---------- Validations list ---------- */
+async function loadList() {
+  try {
+    const r = await apiGet('/validations');
+    renderList(r.validations || []);
+  } catch(e) {}
+}
+
+function renderList(items) {
+  const el = document.getElementById('list');
+  if (!el) return;
+  if (!items.length) {
+    el.innerHTML = '<div style="padding:20px 24px;font-size:0.85rem;color:#8e8e93;">No validations yet — POST to /validate first</div>';
+    return;
+  }
+  el.innerHTML = items.map(v => `
+    <div class="list-item ${v.validation_id === currentId ? 'active' : ''}" onclick="selectValidation('${v.validation_id}')">
+      <div class="row1">
+        <span class="id">${esc(v.validation_id)}</span>
+        <span class="badge ${v.verdict}">${v.verdict}</span>
+      </div>
+      <div class="sub">
+        <span>${esc(v.tx_ref || '').slice(0, 30)}</span>
+        ${v.n_violations ? `<span>${v.n_violations} violation${v.n_violations>1?'s':''}</span>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ---------- Validation detail ---------- */
+async function selectValidation(id) {
+  currentId = id;
+  await loadList();
+  try {
+    const rec = await apiGet(`/validations/${encodeURIComponent(id)}`);
+    renderValidationDetail(rec);
+  } catch(e) {
+    document.getElementById('detail-panel').innerHTML =
+      '<div class="empty-state"><div class="icon">!</div><p>Failed to load</p><span>' + esc(String(e.message)) + '</span></div>';
+  }
+}
+
+function renderValidationDetail(rec) {
+  const res = rec.result || {};
+  const verdict = res.verdict || '?';
+  const violations = res.violations || [];
+  const att = rec.attestation || {};
+  const intent = rec.intent || {};
+  const auth = rec.auth || {};
+  const signer = rec.signer || '';
+
+  const isLiveAttestation = statusInfo &&
+    ((statusInfo.components || {}).attestation_sink || {}).mode === 'on-chain';
+  const chainId = ((statusInfo || {}).components || {}).verifier?.chain_id;
+
+  document.getElementById('detail-panel').innerHTML = `
+    <div class="verdict-banner ${verdict}">
+      <span class="verdict-icon">${verdict === 'PASS' ? '✓' : '✗'}</span>
+      <span>${verdict}</span>
+      <span class="sub">${esc(rec.validation_id)} &middot; signed by ${esc(shortAddr(signer))}</span>
+    </div>
+
+    ${renderAuthSection(auth, rec.intent_hash)}
+    ${renderIntentSection(intent)}
+    ${renderViolationsSection(violations)}
+    ${renderAttestationSection(att, rec.intent_hash, isLiveAttestation, chainId)}
+    ${renderRawJson(rec)}
+  `;
+}
+
+function renderAuthSection(auth, intentHash) {
+  const verified = auth.verified === true;
+  return `
+    <div class="card">
+      <h3>Authorization</h3>
+      <div style="margin-bottom: 14px;">
+        ${verified
+          ? '<span class="auth-badge verified"><span class="shield">🛡</span> Cryptographically verified &middot; EIP-712 ecrecover == signer</span>'
+          : '<span class="auth-badge unverified"><span>⚠</span> Unverified claim &middot; no cryptographic proof</span>'}
+      </div>
+      <div class="intent-grid">
+        ${auth.signer ? `<span class="k">Signer</span><span class="v">${esc(auth.signer)}</span>` : ''}
+        <span class="k">Intent Digest</span><span class="v">${esc(shortHex(auth.digest || intentHash || '', 20, 12))}</span>
+        ${auth.chain_id ? `<span class="k">Domain Chain</span><span class="v">${esc(String(auth.chain_id))}</span>` : ''}
+      </div>
+    </div>`;
+}
+
+function renderIntentSection(intent) {
+  const rows = [
+    ['Token In → Out', esc(shortAddr(intent.token_in)) + ' → ' + esc(shortAddr(intent.token_out))],
+    ['Max Amount In', intent.max_amount_in != null ? esc(String(intent.max_amount_in)) : '—'],
+    ['Min Amount Out', intent.min_amount_out != null ? esc(String(intent.min_amount_out)) : '—'],
+    ['Recipient', esc(intent.recipient || '—')],
+    ['Allowed Targets', (intent.allowed_targets || []).map(t => esc(shortAddr(t))).join(', ') || '—'],
+    ['Allowed Spenders', (intent.allowed_spenders || []).map(s => esc(shortAddr(s))).join(', ') || '—'],
+    ['Deadline', intent.deadline != null ? esc(String(intent.deadline)) : '—'],
+    ['Zero Residual', intent.require_zero_residual ? 'Yes' : 'No'],
+  ];
+  return `
+    <div class="card">
+      <h3>Intent</h3>
+      <div class="intent-grid">
+        ${rows.map(([k, v]) => `<span class="k">${k}</span><span class="v">${v}</span>`).join('')}
+      </div>
+    </div>`;
+}
+
+function renderViolationsSection(violations) {
+  return `
+    <div class="card">
+      <h3>Violations &middot; ${violations.length}</h3>
+      ${violations.length === 0
+        ? '<div class="no-violations">No violations detected — execution fully conforms to the signed authorization.</div>'
+        : violations.map(v => `
+          <div class="violation">
+            <span class="sev ${v.severity}">${v.severity}</span>
+            <span class="cat">${esc(v.category)}</span>
+            <span class="detail">${esc(v.detail)}</span>
+          </div>`).join('')}
+    </div>`;
+}
+
+function renderAttestationSection(att, intentHash, isLive, chainId) {
+  const ref = att.attestation_ref || '';
+  const isDryrun = ref.startsWith('dryrun:');
+  const actualRef = isDryrun ? ref.replace('dryrun:', '') : ref;
+
+  const etherscanBase = chainId === 11155111
+    ? 'https://sepolia.etherscan.io/tx/'
+    : 'https://etherscan.io/tx/';
+
+  let refHtml;
+  if (!ref) {
+    refHtml = '—';
+  } else if (isDryrun) {
+    refHtml = `<span class="dryrun-tag">Dryrun</span> <span style="font-family:var(--mono);font-size:0.78rem;color:#86868b;">${esc(shortHex(actualRef, 14, 8))}</span>`;
+  } else {
+    refHtml = `<span class="onchain-tag">On-chain</span> <a href="${etherscanBase}${esc(actualRef)}" target="_blank" rel="noopener">${esc(shortHex(actualRef, 10, 8))} ↗</a>`;
+  }
+
+  const registryAddr = '0x6719c69829740232f652b4b6bad8e6850922a2fb';
+  const registryLink = chainId === 11155111
+    ? `https://sepolia.etherscan.io/address/${registryAddr}`
+    : '#';
+
+  return `
+    <div class="card">
+      <h3>ERC-8004 Attestation</h3>
+      <div class="attest-grid">
+        <span class="k">Request Hash</span><span class="v">${esc(shortHex(att.request_hash || intentHash || '', 20, 12))}</span>
+        <span class="k">Response</span><span class="v">${esc(String(att.response ?? '—'))} ${att.response != null ? '<span style="color:var(--muted);font-size:0.75rem;">(100 = compliant, 0 = violation)</span>' : ''}</span>
+        <span class="k">Tag</span><span class="v">${esc(att.tag || '—')}</span>
+        <span class="k">Attestation Ref</span><span class="v">${refHtml}</span>
+        <span class="k">Registry</span><span class="v"><a href="${registryLink}" target="_blank" rel="noopener" style="color:var(--info);">${esc(shortAddr(registryAddr))} ↗</a> <span style="color:var(--muted);font-size:0.75rem;">Sepolia</span></span>
+      </div>
+    </div>`;
+}
+
+function renderRawJson(rec) {
+  return `
+    <details style="margin-top:8px;cursor:pointer;">
+      <summary style="font-size:0.82rem;color:var(--muted);user-select:none;">Raw JSON</summary>
+      <pre style="margin-top:10px;background:#f9f9fb;border:1px solid var(--border);border-radius:14px;padding:16px;font-size:0.72rem;line-height:1.6;overflow-x:auto;font-family:var(--mono);max-height:400px;overflow-y:auto;">${esc(JSON.stringify(rec, null, 2))}</pre>
+    </details>`;
+}
+
+/* ========== GATE ========== */
+function renderGatePanel() {
+  document.getElementById('detail-panel').innerHTML = `
+    <div class="card">
+      <h3>GATE — Pre-execution Check</h3>
+      <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">
+        Intercept transactions before they hit the chain. <strong>APPROVE</strong> lets it through, <strong>REJECT</strong> sends it back for the agent to self-correct.
+      </p>
+      <div class="gate-form">
+        <div>
+          <label>Intent (JSON)</label>
+          <textarea id="gate-intent" placeholder='{"token_in":"0x...","token_out":"0x...","recipient":"0x...",...}'></textarea>
+        </div>
+        <div>
+          <label>Proposed TX (JSON)</label>
+          <textarea id="gate-tx" placeholder='{"to":"0x...","data":"0x...","value":"0"}'></textarea>
+        </div>
+        <button class="run-btn" onclick="runGate()">Run GATE Check</button>
+      </div>
+      <div id="gate-result" style="margin-top:20px;"></div>
+    </div>
+  `;
+}
+
+async function runGate() {
+  const intentStr = document.getElementById('gate-intent').value.trim();
+  const txStr = document.getElementById('gate-tx').value.trim();
+  const resultEl = document.getElementById('gate-result');
+
+  if (!intentStr || !txStr) {
+    resultEl.innerHTML = '<div style="color:var(--fail);font-size:0.9rem;">Please fill in both Intent and Proposed TX.</div>';
+    return;
+  }
+
+  let intent, proposedTx;
+  try { intent = JSON.parse(intentStr); } catch(e) {
+    resultEl.innerHTML = '<div style="color:var(--fail);font-size:0.9rem;">Invalid Intent JSON: ' + esc(e.message) + '</div>';
+    return;
+  }
+  try { proposedTx = JSON.parse(txStr); } catch(e) {
+    resultEl.innerHTML = '<div style="color:var(--fail);font-size:0.9rem;">Invalid Proposed TX JSON: ' + esc(e.message) + '</div>';
+    return;
+  }
+
+  resultEl.innerHTML = '<div style="color:var(--muted);font-size:0.9rem;">Running GATE check…</div>';
+
+  try {
+    gateResult = await apiPost('/gate', { intent, proposed_tx: proposedTx });
+    renderGateResult(gateResult);
+  } catch(e) {
+    resultEl.innerHTML = '<div style="color:var(--fail);font-size:0.9rem;">GATE error: ' + esc(e.message) + '</div>';
+  }
+}
+
+function renderGateResult(r) {
+  const decision = r.decision || '?';
+  const partial = r.partial === true;
+  const unchecked = r.unchecked || [];
+  const result = r.result || {};
+  const violations = result.violations || [];
+
+  let html = `
+    <div class="gate-banner ${decision}">
+      <span style="font-size:2rem;">${decision === 'APPROVE' ? '✓' : '✗'}</span>
+      <span>${decision}</span>
+      ${partial ? '<span class="sub" style="color:var(--warn);font-weight:600;">⚠ Partial check — honest labeling</span>' : ''}
+    </div>
+  `;
+
+  if (unchecked.length) {
+    html += `
+      <div class="card" style="margin-top:16px;background:#fffbf0;box-shadow:0 0 0 1px rgba(245,158,11,.1);">
+        <h3 style="color:#92400e;">Unchecked Items</h3>
+        <p style="color:var(--muted);font-size:0.82rem;margin-bottom:8px;">Cannot verify before execution (must wait for on-chain confirmation):</p>
+        <ul class="unchecked-list">
+          ${unchecked.map(u => `<li>${esc(u)}</li>`).join('')}
+        </ul>
+      </div>
+    `;
+  }
+
+  html += `
+    <div class="card" style="margin-top:16px;">
+      <h3>Violations &middot; ${violations.length}</h3>
+      ${violations.length === 0
+        ? '<div class="no-violations">No violations in pre-execution check.</div>'
+        : violations.map(v => `
+          <div class="violation">
+            <span class="sev ${v.severity}">${v.severity}</span>
+            <span class="cat">${esc(v.category)}</span>
+            <span class="detail">${esc(v.detail)}</span>
+          </div>`).join('')}
+    </div>
+  `;
+
+  document.getElementById('gate-result').innerHTML = html;
+}
+
+/* ========== REPUTATION ========== */
+function renderReputationPanel() {
+  document.getElementById('detail-panel').innerHTML = `
+    <div class="card">
+      <h3>Agent Reputation</h3>
+      <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">
+        Look up the trust profile for any agent address: trust score, risk level, and most frequent violation categories.
+      </p>
+      <div class="rep-input-row">
+        <input type="text" id="rep-addr" placeholder="0x..." />
+        <button onclick="lookupReputation()">Lookup</button>
+      </div>
+      <div id="rep-result" style="margin-top:16px;"></div>
+    </div>
+  `;
+}
+
+async function lookupReputation() {
+  const addr = document.getElementById('rep-addr').value.trim();
+  const resultEl = document.getElementById('rep-result');
+  if (!addr) {
+    resultEl.innerHTML = '<div style="color:var(--fail);font-size:0.9rem;">Please enter an agent address.</div>';
+    return;
+  }
+  resultEl.innerHTML = '<div style="color:var(--muted);font-size:0.9rem;">Fetching reputation…</div>';
+  try {
+    const rep = await apiGet(`/reputation/${encodeURIComponent(addr)}`);
+    renderReputationResult(rep);
+  } catch(e) {
+    resultEl.innerHTML = '<div style="color:var(--fail);font-size:0.9rem;">Error: ' + esc(e.message) + '</div>';
+  }
+}
+
+function renderReputationResult(rep) {
+  const score = rep.trust_score;
+  const level = rep.risk_level || 'unknown';
+  const cats = rep.violations_by_category || {};
+  const recent = rep.recent_verdicts || [];
+
+  const scoreDisplay = score != null ? score : '—';
+  const scoreCls = level;
+
+  const catRows = Object.entries(cats).map(([cat, count]) => {
+    const maxCount = Math.max(...Object.values(cats), 1);
+    const pct = Math.round(count / maxCount * 100);
+    return `
+      <div class="cat-row">
+        <span class="cat-name">${esc(cat)}</span>
+        <span class="cat-count">${count}</span>
+      </div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div>
+    `;
+  }).join('');
+
+  document.getElementById('rep-result').innerHTML = `
+    <div class="card" style="background:#f9f9fb;">
+      <div style="display:flex;align-items:center;gap:16px;">
+        <div class="rep-score-big ${scoreCls}">${scoreDisplay}</div>
+        <div>
+          <div style="font-size:1.2rem;font-weight:700;">Trust Score</div>
+          <span class="auth-badge ${level === 'low' ? 'verified' : level === 'unknown' ? '' : 'unverified'}" style="margin-top:4px;font-size:0.75rem;">
+            Risk: ${level.toUpperCase()}
+          </span>
+        </div>
+      </div>
+      <div class="rep-stats-grid">
+        <div class="rep-stat"><div class="num">${rep.total_validations || 0}</div><div class="lbl">Total</div></div>
+        <div class="rep-stat"><div class="num" style="color:var(--pass);">${rep.pass_count || 0}</div><div class="lbl">Pass</div></div>
+        <div class="rep-stat"><div class="num" style="color:var(--fail);">${rep.fail_count || 0}</div><div class="lbl">Fail</div></div>
+        <div class="rep-stat"><div class="num">${rep.pass_rate != null ? rep.pass_rate + '%' : '—'}</div><div class="lbl">Pass Rate</div></div>
+      </div>
+    </div>
+
+    ${Object.keys(cats).length ? `
+      <div class="card" style="margin-top:16px;">
+        <h3>Violations by Category</h3>
+        <p style="color:var(--muted);font-size:0.8rem;margin-bottom:10px;">Most frequent violation types for this agent:</p>
+        <div class="rep-cats">${catRows}</div>
+      </div>
+    ` : ''}
+
+    ${recent.length ? `
+      <div class="card" style="margin-top:16px;">
+        <h3>Recent Verdicts &middot; Last ${recent.length}</h3>
+        ${recent.map(r => `
+          <div class="recent-item">
+            <span class="badge ${r.verdict}">${r.verdict}</span>
+            <span style="font-family:var(--mono);font-size:0.75rem;color:var(--muted);">${esc(r.validation_id || '')}</span>
+            <span style="font-size:0.75rem;color:var(--muted);margin-left:auto;">${esc(r.created_at || '')}</span>
+          </div>
+        `).join('')}
+      </div>
+    ` : ''}
+  `;
+}
+
+/* ---------- Utils ---------- */
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function shortHex(s, head, tail) {
+  head = head || 10; tail = tail || 6;
+  s = String(s ?? '');
+  return s.length > head + tail + 2 ? s.slice(0, head) + '…' + s.slice(-tail) : s;
+}
+function shortAddr(a) {
+  const s = String(a ?? '—');
+  return s.length > 16 ? s.slice(0, 7) + '…' + s.slice(-5) : s;
+}
+
+/* ---------- Init ---------- */
+(async function init() {
+  const ok = await checkHealth();
+  if (!ok) {
+    document.getElementById('list').innerHTML =
+      '<div style="padding:24px;font-size:0.85rem;color:#8e8e93;line-height:1.7;">API unreachable<br><br>Start with:<br><code style="color:#ccc;">python -m eiv.api</code></div>';
+    return;
+  }
+  await loadList();
+  const first = document.querySelector('#list .list-item');
+  if (first) first.click();
+
+  setInterval(async () => { await checkHealth(); await loadList(); }, 6000);
+})();
+</script>
+</body>
+</html>
