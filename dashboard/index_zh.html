@@ -3,67 +3,87 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EIV 控制台</title>
+<title>EIV 仪表板</title>
 <style>
   :root {
-    --sidebar: #1a1a1a;
-    --bg: #f5f5f7;
-    --card: #ffffff;
-    --border: #e8e8ed;
-    --text: #1d1d1f;
-    --muted: #86868b;
-    --pass: #30c85a;
-    --fail: #ff3b30;
-    --warn: #ff9500;
-    --info: #007aff;
-    --purple: #af52de;
-    --mono: 'SF Mono','Menlo','Consolas',monospace;
+    --bg: #000000;
+    --surface-1: #0c0c0e;
+    --surface-2: #141416;
+    --surface-3: #1c1c1f;
+    --sidebar: #0c0c0e;
+    --card: #0c0c0e;
+    --border: rgba(255,255,255,0.06);
+    --border-2: rgba(255,255,255,0.10);
+    --text: #f5f5f7;
+    --text-2: #a1a1a6;
+    --text-3: #6e6e73;
+    --muted: #a1a1a6;
+    --accent: #6e7ff5;
+    --accent-2: #8b9cf7;
+    --accent-soft: rgba(110,127,245,0.12);
+    --info: #6e7ff5;
+    --pass: #30d158;
+    --pass-soft: rgba(48,209,88,0.10);
+    --pass-border: rgba(48,209,88,0.28);
+    --fail: #ff453a;
+    --fail-soft: rgba(255,69,58,0.10);
+    --fail-border: rgba(255,69,58,0.28);
+    --warn: #ffd60a;
+    --warn-soft: rgba(255,214,10,0.10);
+    --warn-border: rgba(255,214,10,0.28);
+    --purple: #b794f6;
+    --mono: ui-monospace,"SF Mono","Cascadia Code",Consolas,monospace;
+    --sans: -apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",system-ui,sans-serif;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { color-scheme: dark; }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    font-family: var(--sans);
     font-size: 16px;
     background: var(--bg);
     color: var(--text);
+    -webkit-font-smoothing: antialiased;
     height: 100vh;
     display: grid;
     grid-template-columns: 360px 1fr;
     overflow: hidden;
   }
+  ::selection { background: rgba(110,127,245,0.35); }
 
   /* ====== SIDEBAR ====== */
   aside {
     background: var(--sidebar);
-    color: #f5f5f7;
+    color: var(--text);
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    border-right: 1px solid var(--border);
   }
   aside header {
     padding: 28px 24px 20px;
-    border-bottom: 1px solid rgba(255,255,255,.06);
+    border-bottom: 1px solid var(--border);
   }
   aside header h1 {
     font-size: 1.35rem; font-weight: 700;
     display: flex; align-items: baseline; gap: 6px;
     letter-spacing: -0.3px;
   }
-  aside header h1 span { font-weight: 400; color: #98989e; }
-  aside header .version { font-size: 0.75rem; color: #6e6e78; margin-top: 2px; }
+  aside header h1 span { font-weight: 400; color: var(--text-3); }
+  aside header .version { font-size: 0.75rem; color: var(--text-3); margin-top: 2px; }
   aside .meta {
-    margin-top: 10px; font-size: 0.85rem; color: #98989e;
+    margin-top: 10px; font-size: 0.85rem; color: var(--text-2);
     display: flex; align-items: center; gap: 8px;
   }
   aside .meta .dot {
     width: 8px; height: 8px; border-radius: 50%;
     background: var(--pass);
-    box-shadow: 0 0 8px rgba(48,200,90,.5);
+    box-shadow: 0 0 8px rgba(48,209,88,.6);
     animation: pulse-dot 2.5s ease-in-out infinite;
   }
   aside .meta .dot.off {
     background: var(--fail);
-    box-shadow: 0 0 8px rgba(255,59,48,.4);
+    box-shadow: 0 0 8px rgba(255,69,58,.5);
     animation: none;
   }
   @keyframes pulse-dot {
@@ -74,41 +94,42 @@
   /* tabs */
   aside .tabs {
     display: flex; gap: 0; padding: 0 16px;
-    border-bottom: 1px solid rgba(255,255,255,.06);
+    border-bottom: 1px solid var(--border);
   }
   aside .tabs button {
     flex: 1; padding: 12px 0; font-size: 0.82rem; font-weight: 600;
-    color: #98989e; background: none; border: none; cursor: pointer;
+    color: var(--text-3); background: none; border: none; cursor: pointer;
     border-bottom: 2px solid transparent;
     transition: color 0.2s, border-color 0.2s;
   }
   aside .tabs button.active {
-    color: #f5f5f7;
-    border-bottom-color: var(--info);
+    color: var(--accent);
+    border-bottom-color: var(--accent);
   }
-  aside .tabs button:hover { color: #ccc; }
+  aside .tabs button:hover { color: var(--text-2); }
 
   aside .list-wrap {
     flex: 1; overflow-y: auto; padding: 12px 0;
   }
   aside .list-wrap h2 {
     font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.8px;
-    color: #6e6e78; padding: 8px 24px 12px; font-weight: 600;
+    color: var(--text-3); padding: 8px 24px 12px; font-weight: 600;
   }
   .list-item {
     margin: 2px 12px;
     padding: 14px 16px;
     cursor: pointer;
-    border-radius: 16px;
-    transition: background 0.2s ease, transform 0.15s ease;
+    border-radius: 14px;
+    border: 1px solid transparent;
+    transition: background 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
   }
   .list-item:hover {
-    background: rgba(255,255,255,.05);
+    background: var(--surface-2);
     transform: translateX(2px);
   }
   .list-item.active {
-    background: rgba(255,255,255,.08);
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+    background: var(--accent-soft);
+    border-color: var(--border-2);
   }
   .list-item .row1 {
     display: flex; align-items: center; gap: 10px; margin-bottom: 4px;
@@ -118,48 +139,49 @@
   .badge {
     font-size: 0.7rem; font-weight: 700; padding: 3px 8px; border-radius: 6px;
     letter-spacing: 0.3px; text-transform: uppercase;
+    border: 1px solid transparent;
   }
-  .badge.PASS { background: rgba(48,200,90,.15); color: #4ae27a; }
-  .badge.FAIL { background: rgba(255,59,48,.15); color: #ff6b60; }
-  .badge.APPROVE { background: rgba(48,200,90,.15); color: #4ae27a; }
-  .badge.REJECT { background: rgba(255,59,48,.15); color: #ff6b60; }
+  .badge.PASS { background: var(--pass-soft); color: var(--pass); border-color: var(--pass-border); }
+  .badge.FAIL { background: var(--fail-soft); color: var(--fail); border-color: var(--fail-border); }
+  .badge.APPROVE { background: var(--pass-soft); color: var(--pass); border-color: var(--pass-border); }
+  .badge.REJECT { background: var(--fail-soft); color: var(--fail); border-color: var(--fail-border); }
   .list-item .sub {
-    font-size: 0.78rem; color: #8e8e93;
+    font-size: 0.78rem; color: var(--text-3);
     display: flex; gap: 8px; align-items: center;
   }
 
   /* reputation sidebar card */
   .rep-card {
     margin: 8px 12px; padding: 14px 16px;
-    background: rgba(255,255,255,.03);
-    border-radius: 16px; border: 1px solid rgba(255,255,255,.06);
+    background: var(--surface-2);
+    border-radius: 14px; border: 1px solid var(--border);
   }
-  .rep-card .agent { font-family: var(--mono); font-size: 0.75rem; color: #98989e; word-break: break-all; }
+  .rep-card .agent { font-family: var(--mono); font-size: 0.75rem; color: var(--text-2); word-break: break-all; }
   .rep-card .score-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
   .rep-card .score {
     font-size: 2rem; font-weight: 700; letter-spacing: -1px;
   }
-  .rep-card .score.low { color: #4ae27a; }
+  .rep-card .score.low { color: var(--pass); }
   .rep-card .score.medium { color: var(--warn); }
-  .rep-card .score.high { color: #ff6b60; }
-  .rep-card .score.unknown { color: #98989e; }
+  .rep-card .score.high { color: var(--fail); }
+  .rep-card .score.unknown { color: var(--text-2); }
   .rep-card .risk {
     font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 999px;
-    text-transform: uppercase; letter-spacing: 0.5px;
+    text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid transparent;
   }
-  .rep-card .risk.low { background: rgba(48,200,90,.12); color: #4ae27a; }
-  .rep-card .risk.medium { background: rgba(255,149,0,.12); color: var(--warn); }
-  .rep-card .risk.high { background: rgba(255,59,48,.12); color: #ff6b60; }
-  .rep-card .risk.unknown { background: rgba(255,255,255,.06); color: #98989e; }
+  .rep-card .risk.low { background: var(--pass-soft); color: var(--pass); border-color: var(--pass-border); }
+  .rep-card .risk.medium { background: var(--warn-soft); color: var(--warn); border-color: var(--warn-border); }
+  .rep-card .risk.high { background: var(--fail-soft); color: var(--fail); border-color: var(--fail-border); }
+  .rep-card .risk.unknown { background: var(--surface-3); color: var(--text-2); border-color: var(--border-2); }
   .rep-card .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; }
-  .rep-card .stat { font-size: 0.72rem; color: #8e8e93; }
-  .rep-card .stat b { color: #ccc; }
+  .rep-card .stat { font-size: 0.72rem; color: var(--text-3); }
+  .rep-card .stat b { color: var(--text-2); }
 
   /* rep category breakdown */
   .rep-cats { margin-top: 10px; }
   .rep-cats .cat-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; font-size: 0.75rem; }
-  .rep-cats .cat-row .cat-name { color: #8e8e93; }
-  .rep-cats .cat-row .cat-count { font-weight: 600; color: #ff6b60; font-family: var(--mono); }
+  .rep-cats .cat-row .cat-name { color: var(--text-3); }
+  .rep-cats .cat-row .cat-count { font-weight: 600; color: var(--fail); font-family: var(--mono); }
   .rep-cats .bar-bg { height: 3px; background: rgba(255,255,255,.08); border-radius: 2px; margin-top: 2px; }
   .rep-cats .bar-fill { height: 100%; background: var(--fail); border-radius: 2px; }
 
@@ -171,11 +193,11 @@
   }
   .empty-state {
     flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    color: var(--muted); gap: 12px;
+    color: var(--text-3); gap: 12px;
   }
-  .empty-state .icon { font-size: 3rem; opacity: .25; }
-  .empty-state p { font-size: 1.05rem; font-weight: 500; }
-  .empty-state span { font-size: 0.85rem; opacity: .6; }
+  .empty-state .icon { font-size: 3rem; opacity: .35; }
+  .empty-state p { font-size: 1.05rem; font-weight: 500; color: var(--text-2); }
+  .empty-state span { font-size: 0.85rem; opacity: .7; }
 
   /* verdict banner */
   .verdict-banner {
@@ -185,18 +207,18 @@
     transition: all 0.3s ease;
   }
   .verdict-banner.PASS {
-    background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf6 100%);
-    color: #065f46;
-    box-shadow: 0 1px 3px rgba(16,185,129,.06), 0 0 0 1px rgba(16,185,129,.08);
+    background: var(--pass-soft);
+    color: var(--pass);
+    border: 1px solid var(--pass-border);
   }
   .verdict-banner.FAIL {
-    background: linear-gradient(135deg, #fef2f2 0%, #fff5f5 100%);
-    color: #991b1b;
-    box-shadow: 0 1px 3px rgba(239,68,68,.06), 0 0 0 1px rgba(239,68,68,.08);
+    background: var(--fail-soft);
+    color: var(--fail);
+    border: 1px solid var(--fail-border);
   }
   .verdict-banner .verdict-icon { font-size: 2rem; }
   .verdict-banner .sub {
-    font-size: 0.85rem; color: var(--muted); font-weight: 400; margin-left: auto;
+    font-size: 0.85rem; color: var(--text-2); font-weight: 400; margin-left: auto;
   }
 
   /* gate banner */
@@ -206,14 +228,14 @@
     padding: 24px 32px; border-radius: 20px;
   }
   .gate-banner.APPROVE {
-    background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf6 100%);
-    color: #065f46;
-    box-shadow: 0 1px 3px rgba(16,185,129,.06), 0 0 0 1px rgba(16,185,129,.08);
+    background: var(--pass-soft);
+    color: var(--pass);
+    border: 1px solid var(--pass-border);
   }
   .gate-banner.REJECT {
-    background: linear-gradient(135deg, #fef2f2 0%, #fff5f5 100%);
-    color: #991b1b;
-    box-shadow: 0 1px 3px rgba(239,68,68,.06), 0 0 0 1px rgba(239,68,68,.08);
+    background: var(--fail-soft);
+    color: var(--fail);
+    border: 1px solid var(--fail-border);
   }
 
   /* card */
@@ -221,11 +243,12 @@
     background: var(--card);
     border-radius: 20px;
     padding: 24px 28px;
-    box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 0 0 1px rgba(0,0,0,.03);
-    transition: box-shadow 0.3s ease;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0,0,0,.4);
+    transition: border-color 0.3s ease;
   }
   .card:hover {
-    box-shadow: 0 4px 16px rgba(0,0,0,.06), 0 0 0 1px rgba(0,0,0,.04);
+    border-color: var(--border-2);
   }
   .card h3 {
     font-size: 1rem; font-weight: 700; color: var(--text);
@@ -240,12 +263,12 @@
     padding: 6px 14px; border-radius: 999px;
   }
   .auth-badge.verified {
-    background: #ecfdf5; color: #065f46;
-    border: 1px solid rgba(16,185,129,.2);
+    background: var(--pass-soft); color: var(--pass);
+    border: 1px solid var(--pass-border);
   }
   .auth-badge.unverified {
-    background: #fff8f0; color: #92400e;
-    border: 1px solid rgba(245,158,11,.2);
+    background: var(--warn-soft); color: var(--warn);
+    border: 1px solid var(--warn-border);
   }
   .auth-badge .shield { font-size: 1rem; }
 
@@ -254,29 +277,29 @@
     display: grid; grid-template-columns: 160px 1fr; gap: 4px 14px;
     font-size: 0.88rem;
   }
-  .intent-grid .k { color: var(--muted); font-weight: 500; padding: 6px 0; }
+  .intent-grid .k { color: var(--text-3); font-weight: 500; padding: 6px 0; }
   .intent-grid .v {
     font-family: var(--mono); font-size: 0.8rem; word-break: break-all;
-    color: #555; padding: 6px 0;
+    color: var(--text-2); padding: 6px 0;
   }
 
   /* violations */
   .no-violations { font-size: 0.95rem; color: var(--pass); font-weight: 500; }
   .violation {
     display: flex; align-items: flex-start; gap: 14px;
-    padding: 14px 0; border-bottom: 1px solid #f0f0f2;
+    padding: 14px 0; border-bottom: 1px solid var(--border);
     transition: background 0.15s ease;
   }
   .violation:last-child { border-bottom: none; }
   .violation .sev {
     font-size: 0.72rem; font-weight: 700; padding: 4px 10px; border-radius: 8px;
-    white-space: nowrap; letter-spacing: 0.3px;
+    white-space: nowrap; letter-spacing: 0.3px; border: 1px solid transparent;
   }
-  .sev.FAIL { background: #fef2f2; color: #dc2626; }
-  .sev.WARN-SAFETY { background: #fff8f0; color: #d97706; }
-  .sev.WARN-SPEC { background: #f8f5ff; color: #7c3aed; }
-  .sev.INFO { background: #f0f9ff; color: #0284c7; }
-  .violation .cat { font-size: 0.88rem; color: #666; font-weight: 600; min-width: 140px; }
+  .sev.FAIL { background: var(--fail-soft); color: var(--fail); border-color: var(--fail-border); }
+  .sev.WARN-SAFETY { background: var(--warn-soft); color: var(--warn); border-color: var(--warn-border); }
+  .sev.WARN-SPEC { background: rgba(183,148,246,.12); color: var(--purple); border-color: rgba(183,148,246,.28); }
+  .sev.INFO { background: var(--accent-soft); color: var(--accent-2); border-color: var(--border-2); }
+  .violation .cat { font-size: 0.88rem; color: var(--text-2); font-weight: 600; min-width: 140px; }
   .violation .detail { font-size: 0.9rem; color: var(--text); line-height: 1.5; }
 
   /* attestation grid */
@@ -284,20 +307,20 @@
     display: grid; grid-template-columns: 130px 1fr; gap: 6px 14px;
     font-size: 0.9rem;
   }
-  .attest-grid .k { color: var(--muted); font-weight: 500; }
+  .attest-grid .k { color: var(--text-3); font-weight: 500; }
   .attest-grid .v {
-    font-family: var(--mono); font-size: 0.8rem; word-break: break-all; color: #555;
+    font-family: var(--mono); font-size: 0.8rem; word-break: break-all; color: var(--text-2);
   }
-  .attest-grid .v a { color: var(--info); text-decoration: none; }
+  .attest-grid .v a { color: var(--accent-2); text-decoration: none; }
   .attest-grid .v a:hover { text-decoration: underline; }
   .dryrun-tag {
     display: inline-block; font-size: 0.7rem; font-weight: 700;
-    background: #f0f0f5; color: #86868b;
+    background: var(--surface-3); color: var(--text-2);
     padding: 2px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;
   }
   .onchain-tag {
     display: inline-block; font-size: 0.7rem; font-weight: 700;
-    background: #ecfdf5; color: #059669;
+    background: var(--pass-soft); color: var(--pass);
     padding: 2px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;
   }
 
@@ -306,30 +329,30 @@
     display: flex; flex-direction: column; gap: 16px;
   }
   .gate-form label {
-    font-size: 0.82rem; font-weight: 600; color: var(--muted);
+    font-size: 0.82rem; font-weight: 600; color: var(--text-3);
     text-transform: uppercase; letter-spacing: 0.5px;
   }
   .gate-form textarea {
     width: 100%; min-height: 120px;
     font-family: var(--mono); font-size: 0.78rem;
     padding: 14px; border-radius: 14px;
-    border: 1px solid var(--border);
-    background: #fafafa; color: var(--text);
+    border: 1px solid var(--border-2);
+    background: var(--surface-2); color: var(--text);
     resize: vertical; outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
   }
   .gate-form textarea:focus {
-    border-color: var(--info);
-    box-shadow: 0 0 0 3px rgba(0,122,255,.1);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
   }
   .gate-form .run-btn {
     align-self: flex-start;
     padding: 12px 32px; border-radius: 999px;
-    background: var(--info); color: #fff; font-weight: 700;
+    background: var(--accent); color: #fff; font-weight: 700;
     font-size: 0.9rem; border: none; cursor: pointer;
     transition: background 0.2s, transform 0.1s;
   }
-  .gate-form .run-btn:hover { background: #0066d6; }
+  .gate-form .run-btn:hover { background: var(--accent-2); }
   .gate-form .run-btn:active { transform: scale(0.97); }
   .gate-form .run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
@@ -339,22 +362,24 @@
   }
   .rep-input-row input {
     flex: 1; padding: 12px 16px; border-radius: 14px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-2);
     font-family: var(--mono); font-size: 0.85rem;
-    background: #fafafa; outline: none;
+    background: var(--surface-2); color: var(--text); outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
   }
+  .rep-input-row input::placeholder { color: var(--text-3); }
   .rep-input-row input:focus {
-    border-color: var(--info);
-    box-shadow: 0 0 0 3px rgba(0,122,255,.1);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
   }
   .rep-input-row button {
     padding: 12px 24px; border-radius: 999px;
-    background: var(--info); color: #fff; font-weight: 700;
+    background: var(--accent); color: #fff; font-weight: 700;
     font-size: 0.85rem; border: none; cursor: pointer;
     white-space: nowrap;
+    transition: background 0.2s;
   }
-  .rep-input-row button:hover { background: #0066d6; }
+  .rep-input-row button:hover { background: var(--accent-2); }
   .rep-input-row button:disabled { opacity: 0.4; cursor: not-allowed; }
 
   /* rep detail */
@@ -363,31 +388,31 @@
   .rep-score-big.low { color: var(--pass); }
   .rep-score-big.medium { color: var(--warn); }
   .rep-score-big.high { color: var(--fail); }
-  .rep-score-big.unknown { color: var(--muted); }
+  .rep-score-big.unknown { color: var(--text-2); }
   .rep-stats-grid {
     display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px;
   }
   .rep-stat {
-    background: #f9f9fb; border-radius: 14px; padding: 16px; text-align: center;
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px; padding: 16px; text-align: center;
   }
   .rep-stat .num { font-size: 1.5rem; font-weight: 700; }
-  .rep-stat .lbl { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+  .rep-stat .lbl { font-size: 0.75rem; color: var(--text-3); margin-top: 2px; }
   .recent-item {
     display: flex; align-items: center; gap: 10px;
-    padding: 8px 0; border-bottom: 1px solid #f0f0f2;
+    padding: 8px 0; border-bottom: 1px solid var(--border);
     font-size: 0.85rem;
   }
   .recent-item:last-child { border-bottom: 0; }
 
   /* unchecked list */
-  .unchecked-list { font-size: 0.85rem; color: var(--muted); }
-  .unchecked-list li { margin: 4px 0; }
+  .unchecked-list { font-size: 0.85rem; color: var(--text-2); }
+  .unchecked-list li { margin: 4px 0; margin-left: 18px; }
 
   /* scrollbar */
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #d5d5da; border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: #bbb; }
+  ::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-3, rgba(255,255,255,0.16)); }
 
   @media (max-width: 800px) {
     body { grid-template-columns: 1fr; }
@@ -404,9 +429,9 @@
     <div class="meta">
       <span class="dot" id="status-dot"></span>
       <span id="status-text">连接中…</span>
-      <a href="/agent" style="margin-left:auto;font-size:0.78rem;color:#7c8cf8;font-weight:600;text-decoration:none;" title="Agent 运行走查">▶ Agent 运行</a>
-      <a href="/zh" style="margin-left:14px;font-size:0.78rem;color:#98989e;text-decoration:none;" title="返回控制台">← 控制台</a>
-      <a href="/dashboard/" style="margin-left:12px;font-size:0.78rem;color:#98989e;text-decoration:none;" title="切换到英文">EN</a>
+      <a href="/agent" style="margin-left:auto;font-size:0.78rem;color:var(--accent);font-weight:600;text-decoration:none;" title="Agent 运行走查">▶ Agent 运行</a>
+      <a href="/zh" style="margin-left:14px;font-size:0.78rem;color:var(--text-2);text-decoration:none;" title="返回控制台">← 控制台</a>
+      <a href="/dashboard/" style="margin-left:12px;font-size:0.78rem;color:var(--text-3);text-decoration:none;" title="切换到英文">EN</a>
     </div>
   </header>
   <div class="tabs">
@@ -508,7 +533,7 @@ function renderList(items) {
   const el = document.getElementById('list');
   if (!el) return;
   if (!items.length) {
-    el.innerHTML = '<div style="padding:20px 24px;font-size:0.85rem;color:#8e8e93;">暂无验证记录 — 请先 POST 到 /validate</div>';
+    el.innerHTML = '<div style="padding:20px 24px;font-size:0.85rem;color:var(--text-3);">暂无验证记录 — 请先 POST 到 /validate</div>';
     return;
   }
   el.innerHTML = items.map(v => `
@@ -632,7 +657,7 @@ function renderAttestationSection(att, intentHash, isLive, chainId) {
   if (!ref) {
     refHtml = '—';
   } else if (isDryrun) {
-    refHtml = `<span class="dryrun-tag">排练模式</span> <span style="font-family:var(--mono);font-size:0.78rem;color:#86868b;">${esc(shortHex(actualRef, 14, 8))}</span>`;
+    refHtml = `<span class="dryrun-tag">排练模式</span> <span style="font-family:var(--mono);font-size:0.78rem;color:var(--text-2);">${esc(shortHex(actualRef, 14, 8))}</span>`;
   } else {
     refHtml = `<span class="onchain-tag">已上链</span> <a href="${etherscanBase}${esc(actualRef)}" target="_blank" rel="noopener">${esc(shortHex(actualRef, 10, 8))} ↗</a>`;
   }
@@ -650,7 +675,7 @@ function renderAttestationSection(att, intentHash, isLive, chainId) {
         <span class="k">响应码</span><span class="v">${esc(String(att.response ?? '—'))} ${att.response != null ? '<span style="color:var(--muted);font-size:0.75rem;">(100 = 合规, 0 = 违规)</span>' : ''}</span>
         <span class="k">标签</span><span class="v">${esc(att.tag || '—')}</span>
         <span class="k">认证引用</span><span class="v">${refHtml}</span>
-        <span class="k">注册表</span><span class="v"><a href="${registryLink}" target="_blank" rel="noopener" style="color:var(--info);">${esc(shortAddr(registryAddr))} ↗</a> <span style="color:var(--muted);font-size:0.75rem;">Sepolia</span></span>
+        <span class="k">注册表</span><span class="v"><a href="${registryLink}" target="_blank" rel="noopener" style="color:var(--accent-2);">${esc(shortAddr(registryAddr))} ↗</a> <span style="color:var(--text-3);font-size:0.75rem;">Sepolia</span></span>
       </div>
     </div>`;
 }
@@ -659,7 +684,7 @@ function renderRawJson(rec) {
   return `
     <details style="margin-top:8px;cursor:pointer;">
       <summary style="font-size:0.82rem;color:var(--muted);user-select:none;">原始 JSON</summary>
-      <pre style="margin-top:10px;background:#f9f9fb;border:1px solid var(--border);border-radius:14px;padding:16px;font-size:0.72rem;line-height:1.6;overflow-x:auto;font-family:var(--mono);max-height:400px;overflow-y:auto;">${esc(JSON.stringify(rec, null, 2))}</pre>
+      <pre style="margin-top:10px;background:var(--bg);color:var(--text-2);border:1px solid var(--border);border-radius:14px;padding:16px;font-size:0.72rem;line-height:1.6;overflow-x:auto;font-family:var(--mono);max-height:400px;overflow-y:auto;">${esc(JSON.stringify(rec, null, 2))}</pre>
     </details>`;
 }
 
@@ -734,9 +759,9 @@ function renderGateResult(r) {
 
   if (unchecked.length) {
     html += `
-      <div class="card" style="margin-top:16px;background:#fffbf0;box-shadow:0 0 0 1px rgba(245,158,11,.1);">
-        <h3 style="color:#92400e;">无法检查的项</h3>
-        <p style="color:var(--muted);font-size:0.82rem;margin-bottom:8px;">执行前无法验证的项目（需上链后才能确认）：</p>
+      <div class="card" style="margin-top:16px;background:var(--warn-soft);border-color:var(--warn-border);">
+        <h3 style="color:var(--warn);">无法检查的项</h3>
+        <p style="color:var(--text-2);font-size:0.82rem;margin-bottom:8px;">执行前无法验证的项目（需上链后才能确认）：</p>
         <ul class="unchecked-list">
           ${unchecked.map(u => `<li>${esc(u)}</li>`).join('')}
         </ul>
@@ -816,7 +841,7 @@ function renderReputationResult(rep) {
   }).join('');
 
   document.getElementById('rep-result').innerHTML = `
-    <div class="card" style="background:#f9f9fb;">
+    <div class="card" style="background:var(--surface-2);">
       <div style="display:flex;align-items:center;gap:16px;">
         <div class="rep-score-big ${scoreCls}">${scoreDisplay}</div>
         <div>
@@ -877,7 +902,7 @@ function shortAddr(a) {
   const ok = await checkHealth();
   if (!ok) {
     document.getElementById('list').innerHTML =
-      '<div style="padding:24px;font-size:0.85rem;color:#8e8e93;line-height:1.7;">API 无法连接<br><br>请先启动：<br><code style="color:#ccc;">python -m eiv.api</code></div>';
+      '<div style="padding:24px;font-size:0.85rem;color:var(--text-3);line-height:1.7;">API 无法连接<br><br>请先启动：<br><code style="color:var(--text-2);">python -m eiv.api</code></div>';
     return;
   }
   await loadList();
