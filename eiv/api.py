@@ -346,6 +346,28 @@ def make_server(
     return server
 
 
+def seed_if_empty(service) -> int:
+    """Populate the bundled scenarios so a fresh / cold-started deploy shows data
+    instead of an empty table. No-op if the store already has records. Any seed
+    failure is swallowed — it must never stop the server from starting.
+    """
+    try:
+        if service.store.list():
+            return 0
+        seeded = 0
+        for sc in load_scenarios():
+            intent, tx_ref = sc.get("intent"), sc.get("tx_ref")
+            if intent and tx_ref:
+                try:
+                    service.run(intent, tx_ref)
+                    seeded += 1
+                except Exception:  # noqa: BLE001 — a bad scenario must not block startup
+                    pass
+        return seeded
+    except Exception:  # noqa: BLE001
+        return 0
+
+
 def main(argv: list | None = None) -> None:
     parser = argparse.ArgumentParser(description="EIV validator HTTP API + console")
     parser.add_argument("--host", default="127.0.0.1")
@@ -358,6 +380,7 @@ def main(argv: list | None = None) -> None:
     args = parser.parse_args(argv)
 
     service = service_from_env(args.store_dir)
+    seeded = seed_if_empty(service)
     info = describe_service(service)
     server = make_server(service, args.host, args.port)
     print(f"EIV validator started -> http://{args.host}:{args.port}")
@@ -369,6 +392,8 @@ def main(argv: list | None = None) -> None:
         mode = comp.get("mode") or comp.get("scheme") or ""
         print(f"  {name:16}: {comp['impl']} ({mode})")
     print(f"  store   : {args.store_dir}")
+    if seeded:
+        print(f"  seeded  : {seeded} bundled scenarios (store was empty)")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
