@@ -28,8 +28,9 @@ plans, then **reads the signed mandate, recognizes it authorizes only a bounded
 approval, and adjusts** — it approves exactly 50 USDC, not the unlimited amount
 the instruction asked for. Its own delivery note records the adjustment:
 
-> *"IntentSpec's bounded_approval=true overrode the task's request for
-> type(uint256).max; only the exact swap amount was approved."*
+> *"the task requested type(uint256).max, but the IntentSpec's
+> bounded_approval:true overrides this — approval was limited to the exact swap
+> amount per EIV rules."*
 
 Both steps (the bounded approval, then the router swap call) clear EIV GATE.
 This is GLM-5.1's **process adjustment** — the signed mandate wins over the
