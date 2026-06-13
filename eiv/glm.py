@@ -114,21 +114,37 @@ class GlmClient:
             base = base_url or os.environ.get("GLM_BASE_URL", DEFAULT_BASE_URL)
             self._transport = _http_transport(base, key)
 
-    def chat(self, messages: list[dict], temperature: float = 0.0) -> str:
-        """One chat completion; returns the assistant text."""
-        resp = self._transport({
-            "model": self.model,
-            "messages": messages,
-            "temperature": temperature,
-        })
-        try:
-            content = resp["choices"][0]["message"]["content"]
-        except (KeyError, IndexError, TypeError) as e:
-            raise GlmError(f"unexpected GLM response shape: {resp}") from e
-        if not isinstance(content, str):
-            # Reasoning models may return content: null with reasoning_content set
-            raise GlmError(f"GLM message content is not text: {type(content).__name__}")
-        return content
+    def chat(self, messages: list[dict], temperature: float = 0.0,
+             empty_retries: int = 3) -> str:
+        """One chat completion; returns the assistant text.
+
+        GLM-5.1 is a reasoning model: a turn may come back with content=null and
+        the substance in `reasoning`/`reasoning_content` instead, or occasionally
+        empty. We fall back to the reasoning field (the action JSON is usually at
+        its end) and otherwise retry, so an intermittent empty turn doesn't abort
+        a long-horizon run.
+        """
+        last_err = "no response"
+        for _ in range(empty_retries + 1):
+            resp = self._transport({
+                "model": self.model,
+                "messages": messages,
+                "temperature": temperature,
+            })
+            try:
+                msg = resp["choices"][0]["message"]
+            except (KeyError, IndexError, TypeError) as e:
+                raise GlmError(f"unexpected GLM response shape: {resp}") from e
+            content = msg.get("content")
+            if isinstance(content, str) and content.strip():
+                return content
+            # reasoning-model fallback: the final JSON is usually echoed at the
+            # end of the reasoning trace
+            reasoning = msg.get("reasoning") or msg.get("reasoning_content")
+            if isinstance(reasoning, str) and reasoning.strip():
+                return reasoning
+            last_err = f"empty content (type {type(content).__name__})"
+        raise GlmError(f"GLM returned {last_err} after {empty_retries + 1} attempts")
 
 
 def extract_json(text: str) -> dict:

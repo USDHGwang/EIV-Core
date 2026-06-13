@@ -1098,15 +1098,33 @@ def part_d10() -> None:
     check(result4["status"] == "error" and result4["events"][-1]["kind"] == "end",
           "loop: model failure -> status=error, log still closed with end")
 
-    # chat(): non-text content (reasoning-style null) raises GlmError, not AttributeError
+    # chat(): persistently empty content (no reasoning) raises GlmError after retries
     def transport5(payload: dict) -> dict:
         return {"choices": [{"message": {"content": None}}]}
 
     try:
-        GlmClient(transport=transport5).chat([{"role": "user", "content": "hi"}])
-        check(False, "GLM: null content raises GlmError")
+        GlmClient(transport=transport5).chat([{"role": "user", "content": "hi"}], empty_retries=1)
+        check(False, "GLM: persistently empty content raises GlmError")
     except _GE:
-        check(True, "GLM: null content raises GlmError")
+        check(True, "GLM: persistently empty content raises GlmError")
+
+    # chat(): reasoning-model fallback — content null but reasoning carries the text
+    def transport6(payload: dict) -> dict:
+        return {"choices": [{"message": {"content": None,
+                                         "reasoning": '...thinking... {"action": "finish"}'}}]}
+
+    out6 = GlmClient(transport=transport6).chat([{"role": "user", "content": "hi"}])
+    check('{"action": "finish"}' in out6, "GLM: falls back to reasoning when content is null")
+
+    # chat(): empty content on first try, real content on retry (intermittent)
+    _seq = [{"choices": [{"message": {"content": None}}]},
+            {"choices": [{"message": {"content": '{"action": "finish"}'}}]}]
+
+    def transport7(payload: dict) -> dict:
+        return _seq.pop(0)
+
+    out7 = GlmClient(transport=transport7).chat([{"role": "user", "content": "hi"}])
+    check(out7 == '{"action": "finish"}', "GLM: retries past an intermittent empty turn")
 
 
 def part_d11() -> None:

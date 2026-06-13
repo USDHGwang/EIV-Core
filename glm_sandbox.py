@@ -78,9 +78,10 @@ ADDRESS_BOOK = {
 # Plain-language treasury mandate. GLM-5.1 turns this into the signed IntentSpec.
 AUTHORIZATION = (
     "I authorize my agent to approve the Uniswap router and swap up to 100 USDC "
-    "for WETH, with the WETH sent only to my own wallet. The approval must be "
-    "bounded to what the swap needs — no unlimited approvals — and no allowance "
-    "may be left dangling afterward. Valid for the next hour."
+    "for WETH, and I want at least 0.02 WETH back, sent only to my own wallet. "
+    "The approval must be bounded to what the swap needs — no unlimited "
+    "approvals — and no allowance may be left dangling afterward. Valid for the "
+    "next hour."
 )
 
 # The headline task. The operator instruction asks for an UNLIMITED approval
