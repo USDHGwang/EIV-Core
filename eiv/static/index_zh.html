@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>EIV Console</title>
+<title>EIV 控制台</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 28 8v8c0 7.2-5.1 12.3-12 14C9.1 28.3 4 23.2 4 16V8z' fill='%237c8cf8'/%3E%3Cpath d='M10.5 16.5l4 4 7-8' stroke='%23000' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
   :root {
@@ -337,21 +337,21 @@
       <path d="M16 2 28 8v8c0 7.2-5.1 12.3-12 14C9.1 28.3 4 23.2 4 16V8z" fill="#6e7ff5"/>
       <path d="M10.5 16.5l4 4 7-8" stroke="#000" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
-    EIV <span class="sub">Console</span>
+    EIV <span class="sub">控制台</span>
   </div>
   <div class="spacer"></div>
   <div class="badges" id="badges">
-    <span class="badge"><span class="dot" id="health-dot"></span><span id="health-label">connecting</span></span>
+    <span class="badge"><span class="dot" id="health-dot"></span><span id="health-label">连接中</span></span>
   </div>
-  <div class="lang"><span class="cur">EN</span><span class="sep">|</span><a href="/zh">中文</a></div>
+  <div class="lang"><a href="/">EN</a><span class="sep">|</span><span class="cur">中文</span></div>
 </nav>
 
 <div class="wrap">
   <div class="hero">
-    <h1>Deterministic <span class="grad">verification</span> for agent execution.</h1>
+    <h1>面向 Agent 执行的<span class="grad">确定性验证</span>。</h1>
     <p class="tagline">
-      Same signed authorization + same on-chain outcome = same verdict, every time.
-      No model dependency. No trust required. Attested to ERC-8004.
+      相同的已签名授权 + 相同的链上结果 = 每一次都得到相同的判定。
+      不依赖模型。无需信任。证明上链到 ERC-8004。
     </p>
   </div>
 
@@ -360,72 +360,72 @@
       <div class="icon det">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="#6e7ff5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="3" width="18" height="18" rx="4" stroke="#6e7ff5" stroke-width="1.5"/></svg>
       </div>
-      <h3>Deterministic</h3>
-      <p>A-G checks are pure functions of the signed spec and on-chain data. No randomness, no model.</p>
+      <h3>确定性</h3>
+      <p>A-G 检查是已签名 spec 与链上数据的纯函数。无随机性，不依赖模型。</p>
     </div>
     <div class="pillar">
       <div class="icon rep">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M17 1l4 4-4 4" stroke="#30d158" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 11V9a4 4 0 014-4h14" stroke="#30d158" stroke-width="1.5" stroke-linecap="round"/><path d="M7 23l-4-4 4-4" stroke="#30d158" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 13v2a4 4 0 01-4 4H3" stroke="#30d158" stroke-width="1.5" stroke-linecap="round"/></svg>
       </div>
-      <h3>Reproducible</h3>
-      <p>Anyone can re-run the same check and get the same verdict. Trust comes from reproducibility.</p>
+      <h3>可复现</h3>
+      <p>任何人都可以重新运行同一项检查并得到相同的判定。信任来自可复现性。</p>
     </div>
     <div class="pillar">
       <div class="icon ind">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5z" stroke="#ff453a" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 17l10 5 10-5" stroke="#ff453a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12l10 5 10-5" stroke="#ff453a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
-      <h3>Independent</h3>
-      <p>EIV is not the wallet, not the agent. It checks the outcome, not the reasoning.</p>
+      <h3>独立</h3>
+      <p>EIV 既不是钱包，也不是 Agent。它检查执行结果，而非推理过程。</p>
     </div>
   </div>
 
   <div class="stats">
-    <div class="stat"><div class="label">Validations</div><div class="val" id="m-total">&mdash;</div></div>
-    <div class="stat"><div class="label">Pass</div><div class="val pass" id="m-pass">&mdash;</div></div>
-    <div class="stat"><div class="label">Fail</div><div class="val fail" id="m-fail">&mdash;</div></div>
-    <div class="stat"><div class="label">Signed auth</div><div class="val" id="m-verified">&mdash;</div></div>
+    <div class="stat"><div class="label">验证总数</div><div class="val" id="m-total">&mdash;</div></div>
+    <div class="stat"><div class="label">通过</div><div class="val pass" id="m-pass">&mdash;</div></div>
+    <div class="stat"><div class="label">失败</div><div class="val fail" id="m-fail">&mdash;</div></div>
+    <div class="stat"><div class="label">已签名授权</div><div class="val" id="m-verified">&mdash;</div></div>
   </div>
 
   <div class="cols">
     <div>
       <div class="panel">
         <div class="panel-head">
-          <h2>Scenarios</h2>
-          <span class="hint">one authorization, real outcomes</span>
+          <h2>场景</h2>
+          <span class="hint">一份授权，真实结果</span>
         </div>
-        <div id="scenarios"><div class="empty">Loading scenarios...</div></div>
+        <div id="scenarios"><div class="empty">正在加载场景…</div></div>
       </div>
 
       <details class="panel tax-panel" style="margin-top:16px">
         <summary class="tax-toggle">
           <span class="arrow">&#9654;</span>
-          Violation taxonomy (A-G)
+          违规分类法 (A-G)
         </summary>
         <div class="taxonomy">
-          <div class="tax"><div class="code">A</div><div class="name">Target</div><div class="desc">Every contract touched must be in the authorization.</div></div>
-          <div class="tax"><div class="code">B</div><div class="name">Recipient</div><div class="desc">Output may only flow to the authorized recipient.</div></div>
-          <div class="tax"><div class="code">C</div><div class="name">Auth expansion</div><div class="desc">Approvals: authorized spender, bounded amount.</div></div>
-          <div class="tax"><div class="code">D</div><div class="name">Amount</div><div class="desc">amountIn &le; max, amountOut &ge; min.</div></div>
-          <div class="tax"><div class="code">E</div><div class="name">Deadline</div><div class="desc">Executed before the authorized deadline.</div></div>
-          <div class="tax"><div class="code">F</div><div class="name">Residual</div><div class="desc">No allowance left dangling after execution.</div></div>
-          <div class="tax"><div class="code">G</div><div class="name">Spec quality</div><div class="desc">Flags underspecified authorizations.</div></div>
+          <div class="tax"><div class="code">A</div><div class="name">Target</div><div class="desc">每个被触及的合约都必须在授权范围内。</div></div>
+          <div class="tax"><div class="code">B</div><div class="name">Recipient</div><div class="desc">输出只能流向被授权的接收者。</div></div>
+          <div class="tax"><div class="code">C</div><div class="name">Auth expansion</div><div class="desc">授权额度：被授权的 spender，且金额有上界。</div></div>
+          <div class="tax"><div class="code">D</div><div class="name">Amount</div><div class="desc">amountIn &le; max，amountOut &ge; min。</div></div>
+          <div class="tax"><div class="code">E</div><div class="name">Deadline</div><div class="desc">在被授权的 deadline 之前执行。</div></div>
+          <div class="tax"><div class="code">F</div><div class="name">Residual</div><div class="desc">执行后不留下任何悬空的 allowance。</div></div>
+          <div class="tax"><div class="code">G</div><div class="name">Spec quality</div><div class="desc">标记定义不充分的授权。</div></div>
         </div>
       </details>
     </div>
 
     <div class="panel">
       <div class="panel-head">
-        <h2>Validations</h2>
+        <h2>验证记录</h2>
         <span class="hint" id="list-hint"></span>
         <div class="spacer"></div>
-        <span class="hint">live</span><span class="dot ok" style="margin-left:6px"></span>
+        <span class="hint">实时</span><span class="dot ok" style="margin-left:6px"></span>
       </div>
-      <div id="validations"><div class="empty">No validations yet &mdash; run a scenario.</div></div>
+      <div id="validations"><div class="empty">暂无验证记录 &mdash; 运行一个场景。</div></div>
     </div>
   </div>
 
   <footer>
-    <div class="trust">Same public inputs &rarr; same verdict, re-runnable by anyone.</div>
+    <div class="trust">相同的公开输入 &rarr; 相同的判定，任何人都可重新运行。</div>
     <div class="links">
       <span class="mono">ERC-8004</span>
       <span class="sep">&middot;</span>
@@ -437,11 +437,11 @@
 </div>
 
 <div class="drawer-mask" id="mask" onclick="closeDrawer()"></div>
-<aside class="drawer" id="drawer" aria-label="validation detail">
+<aside class="drawer" id="drawer" aria-label="验证详情">
   <div class="drawer-head">
     <span id="d-pill"></span>
     <span class="vid" id="d-vid"></span>
-    <button class="x" onclick="closeDrawer()" aria-label="close">&times;</button>
+    <button class="x" onclick="closeDrawer()" aria-label="关闭">&times;</button>
   </div>
   <div class="drawer-body" id="d-body"></div>
 </aside>
@@ -483,18 +483,18 @@ function renderBadges() {
   const c = st.components || {};
   const ver = c.verifier || {}, ad = c.chain_adapter || {}, at = c.attestation_sink || {};
   const verLabel = ver.scheme === "eip712" ? "EIP-712" : (ver.impl || "?");
-  const adLabel = ad.mode === "rpc" ? "Live RPC" : "Fixtures";
-  const atLabel = at.mode === "on-chain" ? "On-chain" : (at.mode === "dry-run" ? "Dry-run" : "Stub");
+  const adLabel = ad.mode === "rpc" ? "实时 RPC" : "Fixtures";
+  const atLabel = at.mode === "on-chain" ? "已上链" : (at.mode === "dry-run" ? "排练模式" : "Stub");
   box.innerHTML =
-    '<span class="badge">Verifier <b>' + esc(verLabel) + "</b></span>" +
+    '<span class="badge">验签 <b>' + esc(verLabel) + "</b></span>" +
     '<span class="badge">Trace <b>' + esc(adLabel) + "</b></span>" +
-    '<span class="badge">Attest <b>' + esc(atLabel) + "</b></span>" +
+    '<span class="badge">认证 <b>' + esc(atLabel) + "</b></span>" +
     '<span class="badge"><span class="dot ok"></span>v' + esc(st.version || "?") + "</span>";
 }
 function setHealth(ok) {
   const dot = $("health-dot"), label = $("health-label");
   if (dot) dot.className = "dot " + (ok ? "ok" : "err");
-  if (label) label.textContent = ok ? "operational" : "unreachable";
+  if (label) label.textContent = ok ? "运行正常" : "无法连接";
 }
 
 /* ---------- metrics ---------- */
@@ -513,7 +513,7 @@ function renderMetrics() {
 function renderScenarios() {
   const box = $("scenarios");
   if (!state.scenarios.length) {
-    box.innerHTML = '<div class="empty">No bundled scenarios.</div>';
+    box.innerHTML = '<div class="empty">没有内置场景。</div>';
     return;
   }
   const rpcMode = ((state.status || {}).components || {}).chain_adapter || {};
@@ -524,27 +524,27 @@ function renderScenarios() {
         esc(sc.incident.name) + "</a> · " + esc(sc.incident.loss) + "</div>"
       : "";
     const liveChip = sc.live
-      ? '<span class="pill neutral" title="execution data fetched from the chain">LIVE · ' +
+      ? '<span class="pill neutral" title="执行数据取自链上">LIVE · ' +
         esc(sc.live.network) + "</span>"
       : "";
     const liveNeedsRpc = sc.live && rpcMode.mode !== "rpc";
     const liveExtra = sc.live
       ? '<div class="incident">⛓ <a href="' + esc(sc.live.explorer) +
-        '" target="_blank" rel="noopener">view the real transaction</a>' +
+        '" target="_blank" rel="noopener">查看真实交易</a>' +
         (liveNeedsRpc
-          ? ' · <span class="dim">start with <span class="mono">' +
+          ? ' · <span class="dim">先启动 <span class="mono">' +
             esc(sc.live.rpc_hint) + "</span></span>"
           : "") + "</div>"
       : "";
     const runBtn = liveNeedsRpc
-      ? '<button class="run-btn" disabled title="needs a live chain adapter">' +
-        "<span>Needs live RPC</span></button>"
+      ? '<button class="run-btn" disabled title="需要实时链适配器">' +
+        "<span>需要实时 RPC</span></button>"
       : '<button class="run-btn" id="run-' + i + '" onclick="runScenario(' + i + ')">' +
-        "<span>Run</span></button>";
+        "<span>运行</span></button>";
     return (
       '<div class="scenario">' +
         '<div class="row1"><h3>' + esc(sc.title) + "</h3>" + liveChip +
-        '<span class="pill expected ' + exp + '">expect ' + esc(sc.expected) + "</span></div>" +
+        '<span class="pill expected ' + exp + '">预期 ' + esc(sc.expected) + "</span></div>" +
         '<div class="summary">' + esc(sc.summary) + "</div>" + incident + liveExtra +
         '<div class="actions">' + runBtn +
           '<span id="res-' + i + '"></span>' +
@@ -558,7 +558,7 @@ async function runScenario(i) {
   const sc = state.scenarios[i];
   const btn = $("run-" + i), res = $("res-" + i);
   btn.disabled = true;
-  btn.innerHTML = '<span class="spin"></span><span>Validating…</span>';
+  btn.innerHTML = '<span class="spin"></span><span>验证中…</span>';
   try {
     const r = await fetch("/validate", {
       method: "POST",
@@ -575,7 +575,7 @@ async function runScenario(i) {
     toast(String(e.message || e), true);
   } finally {
     btn.disabled = false;
-    btn.innerHTML = "<span>Run</span>";
+    btn.innerHTML = "<span>运行</span>";
   }
 }
 
@@ -586,14 +586,14 @@ const shieldSvg =
 function renderValidations() {
   const box = $("validations");
   const v = state.validations;
-  $("list-hint").textContent = v.length ? v.length + " records" : "";
+  $("list-hint").textContent = v.length ? v.length + " 条记录" : "";
   if (!v.length) {
-    box.innerHTML = '<div class="empty">No validations yet &mdash; run a scenario.</div>';
+    box.innerHTML = '<div class="empty">暂无验证记录 &mdash; 运行一个场景。</div>';
     return;
   }
   box.innerHTML =
     "<table><thead><tr>" +
-    "<th>Verdict</th><th>ID</th><th>Transaction</th><th>Auth</th><th>Violations</th><th>When</th>" +
+    "<th>判定</th><th>ID</th><th>交易</th><th>授权</th><th>违规</th><th>时间</th>" +
     "</tr></thead><tbody>" +
     v.map((r) => {
       const cls = r.verdict === "PASS" ? "pass" : "fail";
@@ -604,7 +604,7 @@ function renderValidations() {
         '<td><span class="pill ' + cls + '">' + esc(r.verdict) + "</span></td>" +
         '<td class="mono">' + esc(r.validation_id) + "</td>" +
         '<td class="mono dim">' + esc(shortHex(r.tx_ref, 14, 6)) + "</td>" +
-        "<td>" + (r.verified ? shieldSvg + '<span class="dim" style="font-size:11px">signed</span>' : '<span class="dim" style="font-size:11px">unsigned</span>') + "</td>" +
+        "<td>" + (r.verified ? shieldSvg + '<span class="dim" style="font-size:11px">已签名</span>' : '<span class="dim" style="font-size:11px">未签名</span>') + "</td>" +
         '<td class="mono">' + (r.n_violations || 0) + "</td>" +
         '<td class="dim" style="font-size:12px">' + esc(when) + "</td></tr>"
       );
@@ -647,60 +647,60 @@ async function openRecord(vid) {
   const intent = rec.intent || {};
 
   const banner = verdict === "PASS"
-    ? '<div class="verdict-banner pass">✓ Execution complies with the signed authorization' +
-      '<span class="note">every deterministic check (A–F) passed</span></div>'
-    : '<div class="verdict-banner fail">✗ Execution violates the signed authorization' +
+    ? '<div class="verdict-banner pass">✓ 执行符合已签名的授权' +
+      '<span class="note">每一项确定性检查 (A–F) 均通过</span></div>'
+    : '<div class="verdict-banner fail">✗ 执行违反了已签名的授权' +
       '<span class="note">' + violations.filter((v) => v.severity === "FAIL").length +
-      " hard violation(s) — each one reproducible from public inputs</span></div>";
+      " 项硬性违规 — 每一项都可由公开输入复现</span></div>";
 
   const authBox =
-    '<div class="section"><h4>Authorization</h4><div class="kv">' +
-    kvRow("Signature", auth.verified
-      ? shieldSvg + '<span style="color:var(--pass)">EIP-712 verified</span> <span class="dim">(ecrecover == signer)</span>'
-      : '<span style="color:var(--warn)">unsigned / unverified</span>', true) +
-    (auth.signer ? kvRow("Signer", esc(auth.signer)) : "") +
-    kvRow("Intent digest", esc(shortHex(auth.digest || rec.intent_hash, 20, 12))) +
-    (auth.chain_id ? kvRow("Domain chain", esc(String(auth.chain_id)), true) : "") +
+    '<div class="section"><h4>授权</h4><div class="kv">' +
+    kvRow("签名", auth.verified
+      ? shieldSvg + '<span style="color:var(--pass)">EIP-712 已验证</span> <span class="dim">(ecrecover == signer)</span>'
+      : '<span style="color:var(--warn)">未签名 / 未验证</span>', true) +
+    (auth.signer ? kvRow("签名者", esc(auth.signer)) : "") +
+    kvRow("意图摘要", esc(shortHex(auth.digest || rec.intent_hash, 20, 12))) +
+    (auth.chain_id ? kvRow("域链 ID", esc(String(auth.chain_id)), true) : "") +
     "</div></div>";
 
   const vioBox =
-    '<div class="section"><h4>Checks (' + violations.length + " finding" + (violations.length === 1 ? "" : "s") + ")</h4>" +
+    '<div class="section"><h4>检查 (' + violations.length + " 项发现)</h4>" +
     (violations.length
       ? violations.map((v) => {
           const sev = v.severity === "FAIL" ? "f" : "w";
           return '<div class="violation ' + sev + '"><span class="cat">' + esc(v.severity) +
             " · " + esc(v.category) + '</span><span class="detail">' + esc(v.detail) + "</span></div>";
         }).join("")
-      : '<div class="none-box">No findings — clean execution.</div>') +
+      : '<div class="none-box">未发现问题 — 执行干净。</div>') +
     "</div>";
 
   const intentRows = [
-    ["Targets", (intent.allowed_targets || []).map(esc).join("<br>")],
-    ["Spenders", (intent.allowed_spenders || []).map(esc).join("<br>")],
-    ["Token in → out", esc(shortHex(intent.token_in, 12, 6)) + " → " + esc(shortHex(intent.token_out, 12, 6))],
-    ["Max in / Min out", esc(intent.max_amount_in) + " / " + esc(intent.min_amount_out)],
-    ["Recipient", esc(intent.recipient)],
-    ["Deadline", esc(String(intent.deadline))],
-    ["Constraints", [
-      intent.require_zero_residual ? "zero-residual" : null,
-      intent.bounded_approval ? "bounded-approval" : null,
-      intent.max_slippage_bps != null ? "slippage ≤ " + intent.max_slippage_bps + " bps" : null,
+    ["允许的 Targets", (intent.allowed_targets || []).map(esc).join("<br>")],
+    ["允许的 Spenders", (intent.allowed_spenders || []).map(esc).join("<br>")],
+    ["代币 入 → 出", esc(shortHex(intent.token_in, 12, 6)) + " → " + esc(shortHex(intent.token_out, 12, 6))],
+    ["最大输入 / 最小输出", esc(intent.max_amount_in) + " / " + esc(intent.min_amount_out)],
+    ["接收者", esc(intent.recipient)],
+    ["截止时间", esc(String(intent.deadline))],
+    ["约束", [
+      intent.require_zero_residual ? "零残留" : null,
+      intent.bounded_approval ? "有界授权" : null,
+      intent.max_slippage_bps != null ? "滑点 ≤ " + intent.max_slippage_bps + " bps" : null,
     ].filter(Boolean).map(esc).join(" · ")],
   ];
   const intentBox =
-    '<div class="section"><h4>Signed intent (canonical)</h4><div class="kv">' +
+    '<div class="section"><h4>已签名意图（规范形式）</h4><div class="kv">' +
     intentRows.map(([k, v]) => kvRow(k, v)).join("") + "</div></div>";
 
   const attBox =
-    '<div class="section"><h4>ERC-8004 attestation</h4><div class="kv">' +
-    kvRow("Request hash", esc(shortHex(att.request_hash, 20, 12))) +
-    kvRow("Response", esc(String(att.response)) + ' <span class="dim">(100 = compliant, 0 = violation)</span>', true) +
-    kvRow("Tag", esc(att.tag || "")) +
-    kvRow("Attestation ref", explorerLink(att.attestation_ref || "")) +
+    '<div class="section"><h4>ERC-8004 链上认证</h4><div class="kv">' +
+    kvRow("请求哈希", esc(shortHex(att.request_hash, 20, 12))) +
+    kvRow("响应码", esc(String(att.response)) + ' <span class="dim">(100 = 合规, 0 = 违规)</span>', true) +
+    kvRow("标签", esc(att.tag || "")) +
+    kvRow("认证引用", explorerLink(att.attestation_ref || "")) +
     "</div></div>";
 
   $("d-body").innerHTML = banner + authBox + vioBox + intentBox + attBox +
-    '<details class="raw"><summary>Raw validation record (JSON)</summary><pre>' +
+    '<details class="raw"><summary>原始验证记录 (JSON)</summary><pre>' +
     esc(JSON.stringify(rec, null, 2)) + "</pre></details>";
 
   $("mask").classList.add("open");
