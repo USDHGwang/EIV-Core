@@ -47,12 +47,20 @@ GATE 现场要贴的三段 JSON：见 [`docs/demo-run/gate-live-demo.md`](demo-r
 - 复现验证（评委要）：`python -m eiv.selftest`（182/182 全绿，含密码学向量、自我修正测试）。
 - 一键情境：Console 的 scenario 卡可直接 Run（含 Grok 真盗领 → 判 FAIL），不用打字。
 
-## 5.（可选）公开部署
+## 5. 公开部署（Render，一键）
 
-零第三方依赖,任何能跑 Python 3.9+ 的主机都行,启动命令：
+仓库已带 `render.yaml`。步骤：
 
-```bash
-python -m eiv.api --host 0.0.0.0 --port $PORT
-```
+1. 先 `git push`（确保 `render.yaml` 在 GitHub 上）。
+2. [render.com](https://render.com) → 注册/登录 → **New → Blueprint**。
+3. 连接 GitHub、选 `USDHGwang/EIV-Core` 仓库 → **Apply**。
+4. Render 读 `render.yaml` 自动构建，几分钟后给公开网址（如 `eiv-validator.onrender.com`）。
+5. 演示链接：`https://<你的子域>.onrender.com/`（中文 `/zh`、Dashboard `/dashboard`）。
 
-Render / Railway / Fly 免费层即可（无 build step）。要真链/真 attestation 就在主机环境变量填 `RPC_URL` + `ATTESTER_PRIVATE_KEY`（**绝不提交 key**）。本机跑也满足「可运行 Demo」规则，部署是加分项。
+构建/启动命令（已验证本机可跑）：`pip install -e .` → `python -m eiv.api --host 0.0.0.0 --port $PORT`。
+
+注意：
+- **免费层闲置 15 分钟会休眠**，冷启约 30–60 秒 → 演示前几分钟先打开网址预热。
+- 新部署的 store 是空的 → 用 Console 的 scenario「Run」按钮当场跑几个，列表就有数据。
+- 要真链/真 attestation：在 Render 的 Environment 里加 `RPC_URL` + `ATTESTER_PRIVATE_KEY`（**绝不提交 key**）。
+- 本机跑也满足「可运行 Demo」规则，部署是加分 + 方便评委自己点。

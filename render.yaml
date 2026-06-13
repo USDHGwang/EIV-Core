@@ -1,0 +1,18 @@
+# Render blueprint — one-click deploy of the EIV validator (console + dashboard + API).
+# Zero third-party deps; the whole thing is one stdlib HTTP server.
+#
+# Deploy: render.com -> New -> Blueprint -> connect the GitHub repo -> Apply.
+# Render reads this file, builds, and gives a public URL (e.g. eiv-validator.onrender.com).
+#
+# Optional live-chain / on-chain attestation: add RPC_URL and ATTESTER_PRIVATE_KEY
+# as environment variables in the Render dashboard (NEVER commit keys).
+services:
+  - type: web
+    name: eiv-validator
+    runtime: python
+    plan: free
+    buildCommand: pip install -e .
+    startCommand: python -m eiv.api --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11"
