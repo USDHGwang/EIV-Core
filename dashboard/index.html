@@ -696,6 +696,10 @@ function renderGatePanel() {
       <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">
         Intercept transactions before they hit the chain. <strong>APPROVE</strong> lets it through, <strong>REJECT</strong> sends it back for the agent to self-correct.
       </p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+        <button onclick="loadGateExample('good')" style="padding:7px 13px;font-size:0.8rem;border:1px solid var(--border-2);border-radius:8px;background:var(--surface-2);color:var(--text-2);cursor:pointer;">▶ Example: compliant → APPROVE</button>
+        <button onclick="loadGateExample('drain')" style="padding:7px 13px;font-size:0.8rem;border:1px solid var(--border-2);border-radius:8px;background:var(--surface-2);color:var(--text-2);cursor:pointer;">▶ Example: drain → REJECT</button>
+      </div>
       <div class="gate-form">
         <div>
           <label>Intent (JSON)</label>
@@ -710,6 +714,20 @@ function renderGatePanel() {
       <div id="gate-result" style="margin-top:20px;"></div>
     </div>
   `;
+}
+
+/* ----- one signed mandate; click an example to fill the form and run ----- */
+const GATE_EXAMPLE_INTENT = {"spec":{"allowed_targets":["0x2626664c2603336e57b271c5c0b26f421741e481","0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"],"allowed_spenders":["0x2626664c2603336e57b271c5c0b26f421741e481"],"token_in":"0x833589fcd6edb6e08f4c7c32d4f71b54bda02913","token_out":"0x4200000000000000000000000000000000000006","max_amount_in":"100000000","min_amount_out":"20000000000000000","recipient":"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266","deadline":4102444800,"require_zero_residual":true,"bounded_approval":true,"max_slippage_bps":50},"signature":"0xb04dab3f635b3a89a0075800c737468737fd6802dbfbc46570a36cbd575dd20f42f49bf04ca0bb2915b6f3920c3c79ab16f643fd07dfdd850ec7f809e854c12b1c","signer":"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266","domain":{"name":"EIV","version":"1","chainId":11155111}};
+const GATE_EXAMPLE_GOOD = {"to":"0x833589fcd6edb6e08f4c7c32d4f71b54bda02913","data":"0x095ea7b30000000000000000000000002626664c2603336e57b271c5c0b26f421741e4810000000000000000000000000000000000000000000000000000000002faf080","value":"0x0"};
+const GATE_EXAMPLE_DRAIN = {"to":"0x4200000000000000000000000000000000000006","data":"0xa9059cbb000000000000000000000000111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000470de4df820000","value":"0x0"};
+function loadGateExample(kind) {
+  document.getElementById('gate-intent').value = JSON.stringify(GATE_EXAMPLE_INTENT, null, 2);
+  document.getElementById('gate-tx').value = JSON.stringify(kind === 'drain' ? GATE_EXAMPLE_DRAIN : GATE_EXAMPLE_GOOD, null, 2);
+  runGate();
+}
+function loadRepExample() {
+  document.getElementById('rep-addr').value = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
+  lookupReputation();
 }
 
 async function runGate() {
@@ -798,6 +816,7 @@ function renderReputationPanel() {
         <input type="text" id="rep-addr" placeholder="0x..." />
         <button onclick="lookupReputation()">Lookup</button>
       </div>
+      <button onclick="loadRepExample()" style="margin-top:10px;padding:7px 13px;font-size:0.8rem;border:1px solid var(--border-2);border-radius:8px;background:var(--surface-2);color:var(--text-2);cursor:pointer;">▶ Example: the demo agent</button>
       <div id="rep-result" style="margin-top:16px;"></div>
     </div>
   `;
