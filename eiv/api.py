@@ -64,6 +64,7 @@ _DEFAULT_STORE_DIR = os.path.join(_HERE, "runs")
 _STATIC_INDEX = os.path.join(_HERE, "static", "index.html")
 _STATIC_INDEX_ZH = os.path.join(_HERE, "static", "index_zh.html")
 _DASHBOARD_DIR = os.path.join(_PROJECT_ROOT, "dashboard")
+_WALKTHROUGH = os.path.join(_PROJECT_ROOT, "docs", "demo-run", "walkthrough.html")
 _SCENARIOS_FILE = os.path.join(_HERE, "fixtures", "scenarios.json")
 _INTENTS_DIR = os.path.join(_HERE, "fixtures", "intents")
 
@@ -233,6 +234,8 @@ class _Handler(BaseHTTPRequestHandler):
                 self._send_html(_STATIC_INDEX)
             elif path == "/zh" or path == "/index_zh.html":
                 self._send_html(_STATIC_INDEX_ZH)
+            elif path in ("/agent", "/walkthrough"):
+                self._send_html(_WALKTHROUGH)
             elif path in ("/healthz", "/health"):
                 self._send(200, {"status": "ok", "service": "eiv-validator"})
             elif path == "/status":
