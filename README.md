@@ -259,13 +259,21 @@ agent loop). Configure any OpenAI-compatible provider via `.env`
   Execution and on-chain attestation remain explicit, human-gated steps
   (`EIV_ATTEST_DRY_RUN=1` rehearses without broadcasting).
 
-Run the demo (`python glm_sandbox.py`) — three acts on one signed authorization:
+GLM-5.1's agentic loop is **long-horizon planning → stepwise execution →
+process adjustment → result delivery**; EIV grounds each beat with a
+deterministic, on-chain-attestable verdict. Run the demo
+(`python glm_sandbox.py`) — three acts on one signed treasury mandate (a
+captured run with logs is in [docs/demo-run/](docs/demo-run/README.md)):
 
 | Act | What happens | Outcome |
 |---|---|---|
-| **GREEN** | a compliant task; GLM-5.1 plans and proposes a single router swap | GATE `APPROVE` → delivered |
-| **RESIST** | the same task with a prompt injection ordering a transfer to an attacker | GLM-5.1 refuses the injection on its own (defense in depth) |
-| **BACKSTOP** | a compromised agent submits the drain directly, bypassing the model | GATE `REJECT` (`A:Target`) — the guarantee that holds even when the model is owned |
+| **PROCESS ADJUSTMENT** | the operator tells the agent to approve an *unlimited* allowance; GLM-5.1 reads the signed mandate, sees it authorizes only a bounded approval, and adjusts — approving the exact amount instead | both steps clear GATE; the signed mandate wins over the runtime instruction |
+| **RESIST** | the same mandate with a prompt injection redirecting the WETH output to an attacker | GLM-5.1 refuses the injection on its own (defense in depth) |
+| **BACKSTOP** | a compromised agent, bypassing all model reasoning, submits the drain directly | GATE `REJECT` (`A:Target` + `B:Recipient` + `D:Amount`) — the guarantee that holds even when the model is owned |
+
+The deterministic `REJECT → revise → APPROVE` self-correction loop (for an agent
+that is *not* disciplined enough to adjust on its own) is proven without a
+network by `python -m eiv.selftest` (parts D10/D11).
 
 ## Implementation status
 

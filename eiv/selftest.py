@@ -1109,6 +1109,69 @@ def part_d10() -> None:
         check(True, "GLM: null content raises GlmError")
 
 
+def part_d11() -> None:
+    print("[D11] long-horizon agent self-correction (scripted, no network)")
+    from eiv.agent_loop import AgentRun
+    from eiv.eip712 import sign_intent
+    from eiv.glm import GlmClient
+    from eiv.schema import build_intent_spec as _bis
+    from eiv.service import ValidatorService
+
+    usdc = "0x" + "11" * 20
+    weth = "0x" + "22" * 20
+    router = "0x" + "cd" * 20
+    user = "0x" + "ab" * 20
+    spec_dict = {
+        "allowed_targets": [usdc, router], "allowed_spenders": [router],
+        "token_in": usdc, "token_out": weth,
+        "max_amount_in": "100000000", "min_amount_out": "20000000000000000",
+        "recipient": user, "deadline": int(__import__("time").time()) + 3600,
+        "require_zero_residual": True, "bounded_approval": True,
+        "max_slippage_bps": 100,
+    }
+    env = sign_intent(_bis(spec_dict),
+                      int("0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80", 16))
+    intent = {"spec": spec_dict, **env}
+
+    def approve(spender: str, amount: int) -> str:
+        return "0x095ea7b3" + spender[2:].rjust(64, "0") + hex(amount)[2:].rjust(64, "0")
+
+    MAX = 2 ** 256 - 1
+    # Scripted GLM trajectory: plan -> unlimited approve (REJECT) ->
+    # bounded approve (APPROVE) -> swap (APPROVE) -> finish
+    replies = [
+        json.dumps({"action": "plan", "steps": ["approve router", "swap 50 USDC"]}),
+        json.dumps({"action": "propose_tx", "to": usdc, "data": approve(router, MAX),
+                    "value": "0x0", "note": "approve router (unlimited)"}),
+        json.dumps({"action": "propose_tx", "to": usdc, "data": approve(router, 100_000_000),
+                    "value": "0x0", "note": "approve router (bounded to max_amount_in)"}),
+        json.dumps({"action": "propose_tx", "to": router, "data": "0x3593564c",
+                    "value": "0x0", "note": "swap 50 USDC -> WETH"}),
+        json.dumps({"action": "finish", "summary": "Swap executed within the bounded mandate."}),
+    ]
+
+    def transport(payload: dict) -> dict:
+        return {"choices": [{"message": {"content": replies.pop(0)}}]}
+
+    run = AgentRun(GlmClient(transport=transport), service=ValidatorService())
+    result = run.run(intent, "approve and swap")
+
+    check(result["status"] == "finished", "self-correct: run finishes")
+    check(len(result["rejected"]) == 1, "self-correct: exactly one proposal rejected")
+    check(len(result["approved"]) == 2, "self-correct: two proposals approved (bounded approve + swap)")
+    rej_cats = {v["category"] for v in result["rejected"][0]["violations"]}
+    check("C:AuthExpansion" in rej_cats, "self-correct: unlimited approve flagged C:AuthExpansion")
+
+    gates = [e for e in result["events"] if e["kind"] == "gate"]
+    check([g["decision"] for g in gates] == ["REJECT", "APPROVE", "APPROVE"],
+          "self-correct: REJECT then APPROVE then APPROVE (the repair sequence)")
+
+    # The bounded approve carries no FAIL violation
+    bounded = gates[1]
+    check(all(v["severity"] != "FAIL" for v in bounded["violations"]),
+          "self-correct: bounded approve has no FAIL violation")
+
+
 def part_e() -> None:
     print("[E] attestation encoding & dry-run")
     from eiv.attestation import OnChainAttestationSink
@@ -1238,6 +1301,7 @@ def main() -> int:
     part_d8()
     part_d9()
     part_d10()
+    part_d11()
     part_e()
     part_f()
     passed = sum(_CHECKS)
