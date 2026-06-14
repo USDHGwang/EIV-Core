@@ -51,7 +51,7 @@ from urllib.parse import urlparse
 
 from eiv import __version__
 from eiv.attestation import OnChainAttestationSink, StubAttestationSink
-from eiv.chain_adapter import MockChainAdapter, RpcChainAdapter, TraceNotFound
+from eiv.chain_adapter import FallbackChainAdapter, MockChainAdapter, RpcChainAdapter, TraceNotFound
 from eiv.intent_source import IntentAuthError, IntentSource
 from eiv.schema import AddressPinningError, IntentParseError, TraceParseError
 from eiv.service import ValidatorService
@@ -106,7 +106,10 @@ def service_from_env(store_dir: str | None = None) -> ValidatorService:
       EIV_STORE_BACKEND=sqlite         -> SqliteValidationStore (default: json)
     """
     rpc_url = os.environ.get("RPC_URL", "").strip()
-    adapter = RpcChainAdapter(rpc_url) if rpc_url else MockChainAdapter()
+    if rpc_url:
+        adapter = FallbackChainAdapter(MockChainAdapter(), RpcChainAdapter(rpc_url))
+    else:
+        adapter = MockChainAdapter()
 
     registry = os.environ.get("EIV_VALIDATION_REGISTRY_ADDRESS", "").strip()
     attester_key = os.environ.get("ATTESTER_PRIVATE_KEY", "").strip()
@@ -153,7 +156,9 @@ def describe_service(service: ValidatorService) -> dict:
         },
         "chain_adapter": {
             "impl": type(adapter).__name__,
-            "mode": "rpc" if isinstance(adapter, RpcChainAdapter) else "fixtures",
+            "mode": "rpc+fixtures" if isinstance(adapter, FallbackChainAdapter) else (
+                "rpc" if isinstance(adapter, RpcChainAdapter) else "fixtures"
+            ),
             "rpc_url": getattr(adapter, "rpc_url", None),
         },
         "attestation_sink": {

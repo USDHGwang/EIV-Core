@@ -143,6 +143,25 @@ def _topic_to_address(topic: str) -> str:
     return ("0x" + topic[-40:]).lower()
 
 
+class FallbackChainAdapter:
+    """Try MockChainAdapter (fixtures) first, fall back to RpcChainAdapter.
+
+    This lets fixture-based demo scenarios and live-chain tx_refs coexist
+    when RPC_URL is set.
+    """
+
+    def __init__(self, mock: MockChainAdapter, rpc: "RpcChainAdapter") -> None:
+        self.mock = mock
+        self.rpc = rpc
+        self.rpc_url = rpc.rpc_url
+
+    def get_execution_trace(self, tx_ref: str, spec=None) -> ExecutionTrace:
+        try:
+            return self.mock.get_execution_trace(tx_ref, spec)
+        except TraceNotFound:
+            return self.rpc.get_execution_trace(tx_ref, spec)
+
+
 class RpcChainAdapter:
     """Reconstructs an ExecutionTrace from a live EVM node over JSON-RPC.
 

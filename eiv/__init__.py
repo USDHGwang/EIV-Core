@@ -79,6 +79,7 @@ from eiv.attestation import (
 )
 from eiv.chain_adapter import (
     ChainAdapter,
+    FallbackChainAdapter,
     MockChainAdapter,
     RpcChainAdapter,
     TraceNotFound,
@@ -127,6 +128,7 @@ __all__ = [
     "recover_intent_signer",
     # chain data interface
     "ChainAdapter",
+    "FallbackChainAdapter",
     "MockChainAdapter",
     "RpcChainAdapter",
     "TraceNotFound",
