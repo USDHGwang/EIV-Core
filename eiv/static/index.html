@@ -671,7 +671,7 @@ function renderScenarios() {
     const liveChip = sc.live
       ? '<span class="pill neutral" title="execution data fetched from the chain">LIVE · ' + esc(sc.live.network) + "</span>"
       : "";
-    const liveNeedsRpc = sc.live && rpcMode.mode !== "rpc";
+    const liveNeedsRpc = sc.live && !(rpcMode.mode || "").includes("rpc");
     const liveExtra = sc.live
       ? '<div class="incident">⛓ <a href="' + esc(sc.live.explorer) +
         '" target="_blank" rel="noopener">view the real transaction</a>' +
