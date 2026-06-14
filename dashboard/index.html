@@ -4,420 +4,212 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EIV Dashboard</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 28 8v8c0 7.2-5.1 12.3-12 14C9.1 28.3 4 23.2 4 16V8z' fill='%23C4B5FD'/%3E%3Cpath d='M10.5 16.5l4 4 7-8' stroke='%23000' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #000000;
-    --surface-1: #0c0c0e;
-    --surface-2: #141416;
-    --surface-3: #1c1c1f;
-    --sidebar: #0c0c0e;
-    --card: #0c0c0e;
-    --border: rgba(255,255,255,0.06);
-    --border-2: rgba(255,255,255,0.10);
-    --text: #f5f5f7;
-    --text-2: #a1a1a6;
-    --text-3: #6e6e73;
-    --muted: #a1a1a6;
-    --accent: #6e7ff5;
-    --accent-2: #8b9cf7;
-    --accent-soft: rgba(110,127,245,0.12);
-    --info: #6e7ff5;
-    --pass: #30d158;
-    --pass-soft: rgba(48,209,88,0.10);
-    --pass-border: rgba(48,209,88,0.28);
-    --fail: #ff453a;
-    --fail-soft: rgba(255,69,58,0.10);
-    --fail-border: rgba(255,69,58,0.28);
-    --warn: #ffd60a;
-    --warn-soft: rgba(255,214,10,0.10);
-    --warn-border: rgba(255,214,10,0.28);
-    --purple: #b794f6;
-    --mono: ui-monospace,"SF Mono","Cascadia Code",Consolas,monospace;
-    --sans: -apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",system-ui,sans-serif;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { color-scheme: dark; }
+:root {
+  --bg-root: #09090B;
+  --bg-surface-0: #0C0C0E;
+  --bg-surface-1: #111114;
+  --bg-surface-2: #18181B;
+  --bg-surface-3: #222226;
+  --bg-hover: #27272A;
+  --text-primary: #E8E4E0;
+  --text-secondary: #8A8A8A;
+  --text-muted: #6B6B6B;
+  --text-ghost: #4A4A4A;
+  --accent-primary: #60A5FA;
+  --accent-agent: #C4B5FD;
+  --accent-agent-bg: rgba(196,181,253,0.12);
+  --color-success: #34D399;
+  --color-success-bg: rgba(52,211,153,0.12);
+  --color-success-border: rgba(52,211,153,0.28);
+  --color-error: #EF4444;
+  --color-error-bg: rgba(239,68,68,0.12);
+  --color-error-border: rgba(239,68,68,0.28);
+  --color-warning: #FBBF24;
+  --color-warning-bg: rgba(251,191,36,0.12);
+  --color-warning-border: rgba(251,191,36,0.28);
+  --border-default: rgba(255,255,255,0.06);
+  --border-hover: rgba(255,255,255,0.10);
+  --border-focus: rgba(255,255,255,0.15);
+  --font-sans: 'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --font-mono: 'JetBrains Mono','Fira Code',ui-monospace,monospace;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 9999px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{color-scheme:dark}
+body{font-family:var(--font-sans);font-size:14px;background:var(--bg-root);color:var(--text-primary);-webkit-font-smoothing:antialiased;height:100vh;display:grid;grid-template-columns:340px 1fr;overflow:hidden}
+::selection{background:rgba(196,181,253,0.35)}
+a{color:var(--accent-primary);text-decoration:none}
+a:hover{text-decoration:underline}
 
-  body {
-    font-family: var(--sans);
-    font-size: 16px;
-    background: var(--bg);
-    color: var(--text);
-    -webkit-font-smoothing: antialiased;
-    height: 100vh;
-    display: grid;
-    grid-template-columns: 360px 1fr;
-    overflow: hidden;
-  }
-  ::selection { background: rgba(110,127,245,0.35); }
+/* SIDEBAR */
+aside{background:var(--bg-surface-0);display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border-default)}
+aside header{padding:24px 20px 16px;border-bottom:1px solid var(--border-default)}
+aside header h1{font-size:15px;font-weight:700;display:flex;align-items:baseline;gap:6px;letter-spacing:-0.02em}
+aside header h1 span{font-weight:400;color:var(--text-muted);font-size:12px}
+aside header .version{font-size:11px;color:var(--text-ghost);margin-top:2px;font-family:var(--font-mono)}
+aside .meta{margin-top:8px;font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:8px}
+aside .meta .dot{width:6px;height:6px;border-radius:50%;background:var(--color-success);box-shadow:0 0 8px rgba(52,211,153,0.5);animation:pulse-dot 2.5s ease-in-out infinite;flex:none}
+aside .meta .dot.off{background:var(--color-error);box-shadow:0 0 8px rgba(239,68,68,0.4);animation:none}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.5}}
+aside .nav-links{display:flex;gap:8px;margin-left:auto}
+aside .nav-links a{font-size:11px;font-weight:500;padding:3px 8px;border-radius:var(--radius-sm);transition:background .15s;text-decoration:none}
+aside .nav-links a:hover{background:var(--bg-hover)}
+aside .nav-links a.agent{color:var(--accent-agent)}
+aside .nav-links a.muted{color:var(--text-muted)}
 
-  /* ====== SIDEBAR ====== */
-  aside {
-    background: var(--sidebar);
-    color: var(--text);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    border-right: 1px solid var(--border);
-  }
-  aside header {
-    padding: 28px 24px 20px;
-    border-bottom: 1px solid var(--border);
-  }
-  aside header h1 {
-    font-size: 1.35rem; font-weight: 700;
-    display: flex; align-items: baseline; gap: 6px;
-    letter-spacing: -0.3px;
-  }
-  aside header h1 span { font-weight: 400; color: var(--text-3); }
-  aside header .version { font-size: 0.75rem; color: var(--text-3); margin-top: 2px; }
-  aside .meta {
-    margin-top: 10px; font-size: 0.85rem; color: var(--text-2);
-    display: flex; align-items: center; gap: 8px;
-  }
-  aside .meta .dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--pass);
-    box-shadow: 0 0 8px rgba(48,209,88,.6);
-    animation: pulse-dot 2.5s ease-in-out infinite;
-  }
-  aside .meta .dot.off {
-    background: var(--fail);
-    box-shadow: 0 0 8px rgba(255,69,58,.5);
-    animation: none;
-  }
-  @keyframes pulse-dot {
-    0%, 100% { opacity: 1; }
-    50% { opacity: .5; }
-  }
+/* TABS */
+aside .tabs{display:flex;gap:0;padding:0 12px;border-bottom:1px solid var(--border-default)}
+aside .tabs button{flex:1;padding:10px 0;font-size:11px;font-weight:600;color:var(--text-ghost);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;letter-spacing:0.02em;text-transform:uppercase}
+aside .tabs button.active{color:var(--accent-agent);border-bottom-color:var(--accent-agent)}
+aside .tabs button:hover{color:var(--text-secondary)}
 
-  /* tabs */
-  aside .tabs {
-    display: flex; gap: 0; padding: 0 16px;
-    border-bottom: 1px solid var(--border);
-  }
-  aside .tabs button {
-    flex: 1; padding: 12px 0; font-size: 0.82rem; font-weight: 600;
-    color: var(--text-3); background: none; border: none; cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: color 0.2s, border-color 0.2s;
-  }
-  aside .tabs button.active {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
-  }
-  aside .tabs button:hover { color: var(--text-2); }
+aside .list-wrap{flex:1;overflow-y:auto;padding:8px 0}
+aside .list-wrap h2{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-ghost);padding:8px 20px 8px;font-weight:600}
+.list-item{margin:2px 8px;padding:12px 14px;cursor:pointer;border-radius:var(--radius-md);border:1px solid transparent;transition:background .15s,border-color .15s}
+.list-item:hover{background:var(--bg-surface-1);border-color:var(--border-default)}
+.list-item.active{background:var(--accent-agent-bg);border-color:rgba(196,181,253,0.18)}
+.list-item .row1{display:flex;align-items:center;gap:8px;margin-bottom:3px}
+.list-item .id{font-size:12px;font-weight:600;letter-spacing:-0.01em}
 
-  aside .list-wrap {
-    flex: 1; overflow-y: auto; padding: 12px 0;
-  }
-  aside .list-wrap h2 {
-    font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.8px;
-    color: var(--text-3); padding: 8px 24px 12px; font-weight: 600;
-  }
-  .list-item {
-    margin: 2px 12px;
-    padding: 14px 16px;
-    cursor: pointer;
-    border-radius: 14px;
-    border: 1px solid transparent;
-    transition: background 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
-  }
-  .list-item:hover {
-    background: var(--surface-2);
-    transform: translateX(2px);
-  }
-  .list-item.active {
-    background: var(--accent-soft);
-    border-color: var(--border-2);
-  }
-  .list-item .row1 {
-    display: flex; align-items: center; gap: 10px; margin-bottom: 4px;
-  }
-  .list-item .id { font-size: 0.9rem; font-weight: 600; }
+.badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:var(--radius-sm);letter-spacing:0.03em;text-transform:uppercase;border:1px solid transparent}
+.badge.PASS{background:var(--color-success-bg);color:var(--color-success);border-color:var(--color-success-border)}
+.badge.FAIL{background:var(--color-error-bg);color:var(--color-error);border-color:var(--color-error-border)}
+.badge.APPROVE{background:var(--color-success-bg);color:var(--color-success);border-color:var(--color-success-border)}
+.badge.REJECT{background:var(--color-error-bg);color:var(--color-error);border-color:var(--color-error-border)}
+.list-item .sub{font-size:11px;color:var(--text-ghost);display:flex;gap:8px;align-items:center}
 
-  .badge {
-    font-size: 0.7rem; font-weight: 700; padding: 3px 8px; border-radius: 6px;
-    letter-spacing: 0.3px; text-transform: uppercase;
-    border: 1px solid transparent;
-  }
-  .badge.PASS { background: var(--pass-soft); color: var(--pass); border-color: var(--pass-border); }
-  .badge.FAIL { background: var(--fail-soft); color: var(--fail); border-color: var(--fail-border); }
-  .badge.APPROVE { background: var(--pass-soft); color: var(--pass); border-color: var(--pass-border); }
-  .badge.REJECT { background: var(--fail-soft); color: var(--fail); border-color: var(--fail-border); }
-  .list-item .sub {
-    font-size: 0.78rem; color: var(--text-3);
-    display: flex; gap: 8px; align-items: center;
-  }
+/* MAIN */
+main{overflow-y:auto;padding:32px 40px 60px;display:flex;flex-direction:column;gap:20px}
+.empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-ghost);gap:10px}
+.empty-state .icon{font-size:2.5rem;opacity:.25}
+.empty-state p{font-size:14px;font-weight:500;color:var(--text-secondary)}
+.empty-state span{font-size:12px;opacity:.6}
 
-  /* reputation sidebar card */
-  .rep-card {
-    margin: 8px 12px; padding: 14px 16px;
-    background: var(--surface-2);
-    border-radius: 14px; border: 1px solid var(--border);
-  }
-  .rep-card .agent { font-family: var(--mono); font-size: 0.75rem; color: var(--text-2); word-break: break-all; }
-  .rep-card .score-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
-  .rep-card .score {
-    font-size: 2rem; font-weight: 700; letter-spacing: -1px;
-  }
-  .rep-card .score.low { color: var(--pass); }
-  .rep-card .score.medium { color: var(--warn); }
-  .rep-card .score.high { color: var(--fail); }
-  .rep-card .score.unknown { color: var(--text-2); }
-  .rep-card .risk {
-    font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 999px;
-    text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid transparent;
-  }
-  .rep-card .risk.low { background: var(--pass-soft); color: var(--pass); border-color: var(--pass-border); }
-  .rep-card .risk.medium { background: var(--warn-soft); color: var(--warn); border-color: var(--warn-border); }
-  .rep-card .risk.high { background: var(--fail-soft); color: var(--fail); border-color: var(--fail-border); }
-  .rep-card .risk.unknown { background: var(--surface-3); color: var(--text-2); border-color: var(--border-2); }
-  .rep-card .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; }
-  .rep-card .stat { font-size: 0.72rem; color: var(--text-3); }
-  .rep-card .stat b { color: var(--text-2); }
+/* VERDICT BANNER */
+.verdict-banner{display:flex;align-items:center;gap:14px;font-size:16px;font-weight:700;letter-spacing:-0.02em;padding:20px 24px;border-radius:var(--radius-lg)}
+.verdict-banner.PASS{background:var(--color-success-bg);color:var(--color-success);border:1px solid var(--color-success-border)}
+.verdict-banner.FAIL{background:var(--color-error-bg);color:var(--color-error);border:1px solid var(--color-error-border)}
+.verdict-banner .verdict-icon{font-size:1.5rem}
+.verdict-banner .sub{font-size:12px;color:var(--text-secondary);font-weight:400;margin-left:auto}
 
-  /* rep category breakdown */
-  .rep-cats { margin-top: 10px; }
-  .rep-cats .cat-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; font-size: 0.75rem; }
-  .rep-cats .cat-row .cat-name { color: var(--text-3); }
-  .rep-cats .cat-row .cat-count { font-weight: 600; color: var(--fail); font-family: var(--mono); }
-  .rep-cats .bar-bg { height: 3px; background: rgba(255,255,255,.08); border-radius: 2px; margin-top: 2px; }
-  .rep-cats .bar-fill { height: 100%; background: var(--fail); border-radius: 2px; }
+.gate-banner{display:flex;align-items:center;gap:14px;font-size:16px;font-weight:700;letter-spacing:-0.02em;padding:20px 24px;border-radius:var(--radius-lg)}
+.gate-banner.APPROVE{background:var(--color-success-bg);color:var(--color-success);border:1px solid var(--color-success-border)}
+.gate-banner.REJECT{background:var(--color-error-bg);color:var(--color-error);border:1px solid var(--color-error-border)}
 
-  /* ====== MAIN ====== */
-  main {
-    overflow-y: auto;
-    padding: 36px 44px 60px;
-    display: flex; flex-direction: column; gap: 24px;
-  }
-  .empty-state {
-    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    color: var(--text-3); gap: 12px;
-  }
-  .empty-state .icon { font-size: 3rem; opacity: .35; }
-  .empty-state p { font-size: 1.05rem; font-weight: 500; color: var(--text-2); }
-  .empty-state span { font-size: 0.85rem; opacity: .7; }
+/* CARD */
+.card{background:var(--bg-surface-0);border-radius:var(--radius-lg);padding:20px 24px;border:1px solid var(--border-default);transition:border-color .15s}
+.card:hover{border-color:var(--border-hover)}
+.card h3{font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:14px;letter-spacing:-0.01em;display:flex;align-items:center;gap:8px}
 
-  /* verdict banner */
-  .verdict-banner {
-    display: flex; align-items: center; gap: 14px;
-    font-size: 1.3rem; font-weight: 700;
-    padding: 24px 32px; border-radius: 20px;
-    transition: all 0.3s ease;
-  }
-  .verdict-banner.PASS {
-    background: var(--pass-soft);
-    color: var(--pass);
-    border: 1px solid var(--pass-border);
-  }
-  .verdict-banner.FAIL {
-    background: var(--fail-soft);
-    color: var(--fail);
-    border: 1px solid var(--fail-border);
-  }
-  .verdict-banner .verdict-icon { font-size: 2rem; }
-  .verdict-banner .sub {
-    font-size: 0.85rem; color: var(--text-2); font-weight: 400; margin-left: auto;
-  }
+/* EVIDENCE */
+.evidence{margin-bottom:20px}
+.evidence-layer{margin-bottom:14px}
+.evidence-layer .layer-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-ghost);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border-default)}
+.evidence-item{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:12px}
+.evidence-item .ev-icon{width:16px;height:16px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700}
+.evidence-item.pass .ev-icon{background:var(--color-success-bg);color:var(--color-success)}
+.evidence-item.fail .ev-icon{background:var(--color-error-bg);color:var(--color-error)}
+.evidence-item.warn .ev-icon{background:var(--color-warning-bg);color:var(--color-warning)}
+.evidence-item .ev-text{color:var(--text-secondary)}
+.evidence-item.fail .ev-text{color:var(--text-primary)}
+.evidence-item code{font-family:var(--font-mono);font-size:10px;font-weight:600;color:var(--accent-agent);background:var(--accent-agent-bg);padding:1px 5px;border-radius:3px}
 
-  /* gate banner */
-  .gate-banner {
-    display: flex; align-items: center; gap: 14px;
-    font-size: 1.3rem; font-weight: 700;
-    padding: 24px 32px; border-radius: 20px;
-  }
-  .gate-banner.APPROVE {
-    background: var(--pass-soft);
-    color: var(--pass);
-    border: 1px solid var(--pass-border);
-  }
-  .gate-banner.REJECT {
-    background: var(--fail-soft);
-    color: var(--fail);
-    border: 1px solid var(--fail-border);
-  }
+/* AUTH BADGE */
+.auth-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:4px 12px;border-radius:var(--radius-pill)}
+.auth-badge.verified{background:var(--color-success-bg);color:var(--color-success);border:1px solid var(--color-success-border)}
+.auth-badge.unverified{background:var(--color-warning-bg);color:var(--color-warning);border:1px solid var(--color-warning-border)}
 
-  /* card */
-  .card {
-    background: var(--card);
-    border-radius: 20px;
-    padding: 24px 28px;
-    border: 1px solid var(--border);
-    box-shadow: 0 1px 3px rgba(0,0,0,.4);
-    transition: border-color 0.3s ease;
-  }
-  .card:hover {
-    border-color: var(--border-2);
-  }
-  .card h3 {
-    font-size: 1rem; font-weight: 700; color: var(--text);
-    margin-bottom: 18px; letter-spacing: -0.2px;
-    display: flex; align-items: center; gap: 8px;
-  }
+/* INTENT GRID */
+.intent-grid{display:grid;grid-template-columns:140px 1fr;gap:3px 12px;font-size:12px}
+.intent-grid .k{color:var(--text-muted);font-weight:500;padding:5px 0}
+.intent-grid .v{font-family:var(--font-mono);font-size:11px;word-break:break-all;color:var(--text-secondary);padding:5px 0}
 
-  /* auth verified badge */
-  .auth-badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 0.82rem; font-weight: 600;
-    padding: 6px 14px; border-radius: 999px;
-  }
-  .auth-badge.verified {
-    background: var(--pass-soft); color: var(--pass);
-    border: 1px solid var(--pass-border);
-  }
-  .auth-badge.unverified {
-    background: var(--warn-soft); color: var(--warn);
-    border: 1px solid var(--warn-border);
-  }
-  .auth-badge .shield { font-size: 1rem; }
+/* VIOLATIONS */
+.no-violations{font-size:12px;color:var(--color-success);font-weight:500;padding:8px 0}
+.violation{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border-default)}
+.violation:last-child{border-bottom:none}
+.violation .sev{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;white-space:nowrap;letter-spacing:0.03em;border:1px solid transparent}
+.sev.FAIL{background:var(--color-error-bg);color:var(--color-error);border-color:var(--color-error-border)}
+.sev.WARN-SAFETY{background:var(--color-warning-bg);color:var(--color-warning);border-color:var(--color-warning-border)}
+.sev.WARN-SPEC{background:var(--accent-agent-bg);color:var(--accent-agent);border-color:rgba(196,181,253,0.28)}
+.sev.INFO{background:rgba(96,165,250,0.12);color:var(--accent-primary);border-color:rgba(96,165,250,0.28)}
+.violation .cat{font-size:12px;color:var(--text-secondary);font-weight:600;min-width:120px}
+.violation .detail{font-size:12px;color:var(--text-primary);line-height:1.5}
 
-  /* intent grid */
-  .intent-grid {
-    display: grid; grid-template-columns: 160px 1fr; gap: 4px 14px;
-    font-size: 0.88rem;
-  }
-  .intent-grid .k { color: var(--text-3); font-weight: 500; padding: 6px 0; }
-  .intent-grid .v {
-    font-family: var(--mono); font-size: 0.8rem; word-break: break-all;
-    color: var(--text-2); padding: 6px 0;
-  }
+/* ATTESTATION GRID */
+.attest-grid{display:grid;grid-template-columns:120px 1fr;gap:4px 12px;font-size:12px}
+.attest-grid .k{color:var(--text-muted);font-weight:500}
+.attest-grid .v{font-family:var(--font-mono);font-size:11px;word-break:break-all;color:var(--text-secondary)}
+.attest-grid .v a{color:var(--accent-primary);text-decoration:none}
+.attest-grid .v a:hover{text-decoration:underline}
+.tag-chip{display:inline-block;font-size:10px;font-weight:700;padding:1px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:0.03em}
+.tag-chip.dryrun{background:var(--bg-surface-3);color:var(--text-secondary)}
+.tag-chip.onchain{background:var(--color-success-bg);color:var(--color-success)}
 
-  /* violations */
-  .no-violations { font-size: 0.95rem; color: var(--pass); font-weight: 500; }
-  .violation {
-    display: flex; align-items: flex-start; gap: 14px;
-    padding: 14px 0; border-bottom: 1px solid var(--border);
-    transition: background 0.15s ease;
-  }
-  .violation:last-child { border-bottom: none; }
-  .violation .sev {
-    font-size: 0.72rem; font-weight: 700; padding: 4px 10px; border-radius: 8px;
-    white-space: nowrap; letter-spacing: 0.3px; border: 1px solid transparent;
-  }
-  .sev.FAIL { background: var(--fail-soft); color: var(--fail); border-color: var(--fail-border); }
-  .sev.WARN-SAFETY { background: var(--warn-soft); color: var(--warn); border-color: var(--warn-border); }
-  .sev.WARN-SPEC { background: rgba(183,148,246,.12); color: var(--purple); border-color: rgba(183,148,246,.28); }
-  .sev.INFO { background: var(--accent-soft); color: var(--accent-2); border-color: var(--border-2); }
-  .violation .cat { font-size: 0.88rem; color: var(--text-2); font-weight: 600; min-width: 140px; }
-  .violation .detail { font-size: 0.9rem; color: var(--text); line-height: 1.5; }
+/* GATE FORM */
+.gate-form{display:flex;flex-direction:column;gap:14px}
+.gate-form label{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
+.gate-form textarea{width:100%;min-height:110px;font-family:var(--font-mono);font-size:11px;padding:12px;border-radius:var(--radius-md);border:1px solid var(--border-hover);background:var(--bg-surface-1);color:var(--text-primary);resize:vertical;outline:none;transition:border-color .15s,box-shadow .15s}
+.gate-form textarea:focus{border-color:var(--accent-agent);box-shadow:0 0 0 2px var(--accent-agent-bg)}
+.btn-primary{align-self:flex-start;padding:8px 24px;border-radius:var(--radius-pill);background:var(--accent-agent);color:#09090B;font-weight:600;font-size:12px;border:none;cursor:pointer;transition:background .15s,transform .08s}
+.btn-primary:hover{background:#D4C8FD}
+.btn-primary:active{transform:scale(0.97)}
+.btn-primary:disabled{opacity:0.35;cursor:not-allowed}
+.btn-example{padding:5px 12px;font-size:11px;border:1px solid var(--border-hover);border-radius:var(--radius-sm);background:var(--bg-surface-1);color:var(--text-secondary);cursor:pointer;transition:background .15s,border-color .15s}
+.btn-example:hover{background:var(--bg-surface-2);border-color:var(--border-focus)}
 
-  /* attestation grid */
-  .attest-grid {
-    display: grid; grid-template-columns: 130px 1fr; gap: 6px 14px;
-    font-size: 0.9rem;
-  }
-  .attest-grid .k { color: var(--text-3); font-weight: 500; }
-  .attest-grid .v {
-    font-family: var(--mono); font-size: 0.8rem; word-break: break-all; color: var(--text-2);
-  }
-  .attest-grid .v a { color: var(--accent-2); text-decoration: none; }
-  .attest-grid .v a:hover { text-decoration: underline; }
-  .dryrun-tag {
-    display: inline-block; font-size: 0.7rem; font-weight: 700;
-    background: var(--surface-3); color: var(--text-2);
-    padding: 2px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;
-  }
-  .onchain-tag {
-    display: inline-block; font-size: 0.7rem; font-weight: 700;
-    background: var(--pass-soft); color: var(--pass);
-    padding: 2px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;
-  }
+/* REP INPUT */
+.rep-input-row{display:flex;gap:10px;align-items:center}
+.rep-input-row input{flex:1;padding:8px 14px;border-radius:var(--radius-md);border:1px solid var(--border-hover);font-family:var(--font-mono);font-size:12px;background:var(--bg-surface-1);color:var(--text-primary);outline:none;transition:border-color .15s,box-shadow .15s}
+.rep-input-row input::placeholder{color:var(--text-ghost)}
+.rep-input-row input:focus{border-color:var(--accent-agent);box-shadow:0 0 0 2px var(--accent-agent-bg)}
 
-  /* Gate form */
-  .gate-form {
-    display: flex; flex-direction: column; gap: 16px;
-  }
-  .gate-form label {
-    font-size: 0.82rem; font-weight: 600; color: var(--text-3);
-    text-transform: uppercase; letter-spacing: 0.5px;
-  }
-  .gate-form textarea {
-    width: 100%; min-height: 120px;
-    font-family: var(--mono); font-size: 0.78rem;
-    padding: 14px; border-radius: 14px;
-    border: 1px solid var(--border-2);
-    background: var(--surface-2); color: var(--text);
-    resize: vertical; outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-  .gate-form textarea:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-soft);
-  }
-  .gate-form .run-btn {
-    align-self: flex-start;
-    padding: 12px 32px; border-radius: 999px;
-    background: var(--accent); color: #fff; font-weight: 700;
-    font-size: 0.9rem; border: none; cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-  }
-  .gate-form .run-btn:hover { background: var(--accent-2); }
-  .gate-form .run-btn:active { transform: scale(0.97); }
-  .gate-form .run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+/* REP DETAIL */
+.rep-score-big{font-size:2.5rem;font-weight:700;letter-spacing:-2px}
+.rep-score-big.low{color:var(--color-success)}
+.rep-score-big.medium{color:var(--color-warning)}
+.rep-score-big.high{color:var(--color-error)}
+.rep-score-big.unknown{color:var(--text-secondary)}
+.rep-stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.rep-stat{background:var(--bg-surface-1);border:1px solid var(--border-default);border-radius:var(--radius-md);padding:14px;text-align:center}
+.rep-stat .num{font-size:1.3rem;font-weight:700;font-variant-numeric:tabular-nums}
+.rep-stat .lbl{font-size:10px;color:var(--text-muted);margin-top:2px;text-transform:uppercase;letter-spacing:0.8px;font-weight:600}
 
-  /* rep input */
-  .rep-input-row {
-    display: flex; gap: 12px; align-items: center;
-  }
-  .rep-input-row input {
-    flex: 1; padding: 12px 16px; border-radius: 14px;
-    border: 1px solid var(--border-2);
-    font-family: var(--mono); font-size: 0.85rem;
-    background: var(--surface-2); color: var(--text); outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-  .rep-input-row input::placeholder { color: var(--text-3); }
-  .rep-input-row input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-soft);
-  }
-  .rep-input-row button {
-    padding: 12px 24px; border-radius: 999px;
-    background: var(--accent); color: #fff; font-weight: 700;
-    font-size: 0.85rem; border: none; cursor: pointer;
-    white-space: nowrap;
-    transition: background 0.2s;
-  }
-  .rep-input-row button:hover { background: var(--accent-2); }
-  .rep-input-row button:disabled { opacity: 0.4; cursor: not-allowed; }
+/* AGENT CARD (reputation) */
+.agent-card{display:flex;align-items:center;gap:16px;padding:16px;background:var(--bg-surface-1);border:1px solid rgba(196,181,253,0.15);border-radius:var(--radius-lg);margin-bottom:16px}
+.agent-card .agent-ring svg{display:block}
+.agent-card .agent-ring .ring-fill{transition:stroke-dashoffset .6s cubic-bezier(0.16,1,0.3,1),stroke .3s}
+.agent-card .agent-info{flex:1}
+.agent-card .agent-addr{font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);word-break:break-all}
+.agent-card .agent-meta{display:flex;gap:8px;align-items:center;margin-top:6px}
 
-  /* rep detail */
-  .rep-detail { margin-top: 20px; }
-  .rep-score-big { font-size: 3rem; font-weight: 700; letter-spacing: -2px; }
-  .rep-score-big.low { color: var(--pass); }
-  .rep-score-big.medium { color: var(--warn); }
-  .rep-score-big.high { color: var(--fail); }
-  .rep-score-big.unknown { color: var(--text-2); }
-  .rep-stats-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px;
-  }
-  .rep-stat {
-    background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px; padding: 16px; text-align: center;
-  }
-  .rep-stat .num { font-size: 1.5rem; font-weight: 700; }
-  .rep-stat .lbl { font-size: 0.75rem; color: var(--text-3); margin-top: 2px; }
-  .recent-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 8px 0; border-bottom: 1px solid var(--border);
-    font-size: 0.85rem;
-  }
-  .recent-item:last-child { border-bottom: 0; }
+.rep-cats{margin-top:10px}
+.rep-cats .cat-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;font-size:11px}
+.rep-cats .cat-row .cat-name{color:var(--text-muted)}
+.rep-cats .cat-row .cat-count{font-weight:600;color:var(--color-error);font-family:var(--font-mono);font-size:10px}
+.rep-cats .bar-bg{height:2px;background:rgba(255,255,255,.06);border-radius:1px;margin-top:2px}
+.rep-cats .bar-fill{height:100%;background:var(--color-error);border-radius:1px}
 
-  /* unchecked list */
-  .unchecked-list { font-size: 0.85rem; color: var(--text-2); }
-  .unchecked-list li { margin: 4px 0; margin-left: 18px; }
+.recent-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border-default);font-size:12px}
+.recent-item:last-child{border-bottom:0}
 
-  /* scrollbar */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--border-3, rgba(255,255,255,0.16)); }
+.unchecked-list{font-size:12px;color:var(--text-secondary);list-style:none;padding:0}
+.unchecked-list li{padding:3px 0;padding-left:16px;position:relative}
+.unchecked-list li::before{content:"—";position:absolute;left:0;color:var(--text-ghost)}
 
-  @media (max-width: 800px) {
-    body { grid-template-columns: 1fr; }
-    aside { display: none; }
-  }
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bg-surface-3);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--bg-hover)}
+
+@media(max-width:800px){body{grid-template-columns:1fr}aside{display:none}}
 </style>
 </head>
 <body>
@@ -429,9 +221,11 @@
     <div class="meta">
       <span class="dot" id="status-dot"></span>
       <span id="status-text">Connecting…</span>
-      <a href="/agent" style="margin-left:auto;font-size:0.78rem;color:var(--accent);font-weight:600;text-decoration:none;" title="Agent run walkthrough">▶ Agent Run</a>
-      <a href="/" style="margin-left:14px;font-size:0.78rem;color:var(--text-2);text-decoration:none;" title="Back to Console">← Console</a>
-      <a href="/dashboard/index_zh.html" style="margin-left:12px;font-size:0.78rem;color:var(--text-3);text-decoration:none;" title="Switch to Chinese">中文</a>
+      <div class="nav-links">
+        <a href="/agent" class="agent" title="Agent run walkthrough">Agent Run</a>
+        <a href="/" class="muted" title="Back to Console">Console</a>
+        <a href="/dashboard/index_zh.html" class="muted" title="Switch to Chinese">ZH</a>
+      </div>
     </div>
   </header>
   <div class="tabs">
@@ -458,27 +252,23 @@ const API = '';
 let currentId = null;
 let currentTab = 'validations';
 let statusInfo = null;
-let gateResult = null;
 
-/* ---------- API helpers ---------- */
 async function apiGet(path) {
-  const r = await fetch(`${API}${path}`);
+  const r = await fetch(API + path);
   const body = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(body.error || `${path} -> ${r.status}`);
+  if (!r.ok) throw new Error(body.error || path + ' -> ' + r.status);
   return body;
 }
 async function apiPost(path, data) {
-  const r = await fetch(`${API}${path}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+  const r = await fetch(API + path, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   });
   const body = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(body.error || `${path} -> ${r.status}`);
+  if (!r.ok) throw new Error(body.error || path + ' -> ' + r.status);
   return body;
 }
 
-/* ---------- Health ---------- */
 async function checkHealth() {
   try {
     const r = await apiGet('/status');
@@ -487,80 +277,101 @@ async function checkHealth() {
     document.getElementById('status-text').textContent = 'Connected';
     document.getElementById('api-version').textContent = 'v' + (r.version || '?');
     return true;
-  } catch(e) {
+  } catch {
     document.getElementById('status-dot').className = 'dot off';
     document.getElementById('status-text').textContent = 'Unreachable';
     return false;
   }
 }
 
-/* ---------- Tabs ---------- */
+/* TABS */
 function switchTab(tab) {
   currentTab = tab;
   document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
   currentId = null;
-  gateResult = null;
-
   const wrap = document.getElementById('sidebar-content');
   if (tab === 'validations') {
-    wrap.innerHTML = '<h2>Validations</h2><div id="list"></div>';
-    loadList().then(() => {
-      const first = document.querySelector('#list .list-item');
-      if (first) first.click();
-    });
+    wrap.innerHTML = '<h2>VALIDATIONS</h2><div id="list"></div>';
+    loadList().then(() => { const f = document.querySelector('#list .list-item'); if (f) f.click(); });
   } else if (tab === 'gate') {
     wrap.innerHTML = '<h2>GATE</h2>';
     renderGatePanel();
   } else if (tab === 'reputation') {
-    wrap.innerHTML = '<h2>Reputation</h2>';
+    wrap.innerHTML = '<h2>REPUTATION</h2>';
     renderReputationPanel();
   }
 }
-
 document.querySelectorAll('.tabs button').forEach(btn => {
   btn.addEventListener('click', () => switchTab(btn.dataset.tab));
 });
 
-/* ---------- Validations list ---------- */
+/* VALIDATIONS LIST */
 async function loadList() {
-  try {
-    const r = await apiGet('/validations');
-    renderList(r.validations || []);
-  } catch(e) {}
+  try { const r = await apiGet('/validations'); renderList(r.validations || []); } catch {}
 }
-
 function renderList(items) {
   const el = document.getElementById('list');
   if (!el) return;
   if (!items.length) {
-    el.innerHTML = '<div style="padding:20px 24px;font-size:0.85rem;color:var(--text-3);">No validations yet — POST to /validate first</div>';
+    el.innerHTML = '<div style="padding:20px;font-size:12px;color:var(--text-ghost);">No validations yet</div>';
     return;
   }
-  el.innerHTML = items.map(v => `
-    <div class="list-item ${v.validation_id === currentId ? 'active' : ''}" onclick="selectValidation('${v.validation_id}')">
-      <div class="row1">
-        <span class="id">${esc(v.validation_id)}</span>
-        <span class="badge ${v.verdict}">${v.verdict}</span>
-      </div>
-      <div class="sub">
-        <span>${esc(v.tx_ref || '').slice(0, 30)}</span>
-        ${v.n_violations ? `<span>${v.n_violations} violation${v.n_violations>1?'s':''}</span>` : ''}
-      </div>
-    </div>
-  `).join('');
+  el.innerHTML = items.map(v =>
+    '<div class="list-item ' + (v.validation_id === currentId ? 'active' : '') + '" onclick="selectValidation(\'' + v.validation_id + '\')">' +
+      '<div class="row1"><span class="id">' + esc(v.validation_id) + '</span><span class="badge ' + v.verdict + '">' + v.verdict + '</span></div>' +
+      '<div class="sub"><span>' + esc((v.tx_ref || '').slice(0, 28)) + '</span>' +
+      (v.n_violations ? '<span>' + v.n_violations + ' violation' + (v.n_violations > 1 ? 's' : '') + '</span>' : '') + '</div></div>'
+  ).join('');
 }
 
-/* ---------- Validation detail ---------- */
+/* VALIDATION DETAIL */
 async function selectValidation(id) {
   currentId = id;
   await loadList();
   try {
-    const rec = await apiGet(`/validations/${encodeURIComponent(id)}`);
+    const rec = await apiGet('/validations/' + encodeURIComponent(id));
     renderValidationDetail(rec);
-  } catch(e) {
+  } catch (e) {
     document.getElementById('detail-panel').innerHTML =
       '<div class="empty-state"><div class="icon">!</div><p>Failed to load</p><span>' + esc(String(e.message)) + '</span></div>';
   }
+}
+
+function buildEvidence(violations, auth) {
+  const cats = {
+    "A:Target": "All contracts in the authorized allowlist",
+    "B:Recipient": "Output flows to the authorized recipient",
+    "C:AuthExpansion": "Approvals are bounded and authorized",
+    "D:Amount": "Amounts within authorized range",
+    "E:Deadline": "Executed before the authorized deadline",
+    "F:Residual": "No dangling allowances left",
+  };
+  const warnCats = { "G:SpecQuality": "Authorization is well-specified" };
+  const failedSet = new Set(violations.filter(v => v.severity === 'FAIL').map(v => v.category));
+  const warnedSet = new Set(violations.filter(v => v.severity !== 'FAIL').map(v => v.category));
+
+  function item(passed, text, code, isWarn) {
+    const cls = passed ? 'pass' : (isWarn ? 'warn' : 'fail');
+    const icon = passed ? '✓' : (isWarn ? '!' : '✗');
+    return '<div class="evidence-item ' + cls + '"><span class="ev-icon">' + icon + '</span>' +
+      '<span class="ev-text">' + (code ? '<code>' + esc(code) + '</code> ' : '') + esc(text) + '</span></div>';
+  }
+
+  let html = '<div class="evidence">';
+  html += '<div class="evidence-layer"><div class="layer-label">L1 — Authorization</div>';
+  html += item(auth.verified === true, auth.verified ? 'EIP-712 signature cryptographically verified' : 'Signature not verified', '');
+  html += '</div>';
+  html += '<div class="evidence-layer"><div class="layer-label">L2 — Execution Match (Predicates A–F)</div>';
+  for (const [cat, desc] of Object.entries(cats)) {
+    html += item(!failedSet.has(cat) && !warnedSet.has(cat), desc, cat, warnedSet.has(cat));
+  }
+  html += '</div>';
+  html += '<div class="evidence-layer"><div class="layer-label">L3 — Spec Quality</div>';
+  for (const [cat, desc] of Object.entries(warnCats)) {
+    html += item(!warnedSet.has(cat) && !failedSet.has(cat), desc, cat, warnedSet.has(cat) || failedSet.has(cat));
+  }
+  html += '</div></div>';
+  return html;
 }
 
 function renderValidationDetail(rec) {
@@ -571,42 +382,35 @@ function renderValidationDetail(rec) {
   const intent = rec.intent || {};
   const auth = rec.auth || {};
   const signer = rec.signer || '';
-
-  const isLiveAttestation = statusInfo &&
-    ((statusInfo.components || {}).attestation_sink || {}).mode === 'on-chain';
+  const isLive = statusInfo && ((statusInfo.components || {}).attestation_sink || {}).mode === 'on-chain';
   const chainId = ((statusInfo || {}).components || {}).verifier?.chain_id;
 
-  document.getElementById('detail-panel').innerHTML = `
-    <div class="verdict-banner ${verdict}">
-      <span class="verdict-icon">${verdict === 'PASS' ? '✓' : '✗'}</span>
-      <span>${verdict}</span>
-      <span class="sub">${esc(rec.validation_id)} &middot; signed by ${esc(shortAddr(signer))}</span>
-    </div>
-
-    ${renderAuthSection(auth, rec.intent_hash)}
-    ${renderIntentSection(intent)}
-    ${renderViolationsSection(violations)}
-    ${renderAttestationSection(att, rec.intent_hash, isLiveAttestation, chainId)}
-    ${renderRawJson(rec)}
-  `;
+  document.getElementById('detail-panel').innerHTML =
+    '<div class="verdict-banner ' + verdict + '">' +
+      '<span class="verdict-icon">' + (verdict === 'PASS' ? '✓' : '✗') + '</span>' +
+      '<span>' + verdict + '</span>' +
+      '<span class="sub">' + esc(rec.validation_id) + ' &middot; ' + esc(shortAddr(signer)) + '</span>' +
+    '</div>' +
+    buildEvidence(violations, auth) +
+    renderAuthSection(auth, rec.intent_hash) +
+    renderIntentSection(intent) +
+    renderViolationsSection(violations) +
+    renderAttestationSection(att, rec.intent_hash, isLive, chainId) +
+    renderRawJson(rec);
 }
 
 function renderAuthSection(auth, intentHash) {
   const verified = auth.verified === true;
-  return `
-    <div class="card">
-      <h3>Authorization</h3>
-      <div style="margin-bottom: 14px;">
-        ${verified
-          ? '<span class="auth-badge verified"><span class="shield">🛡</span> Cryptographically verified &middot; EIP-712 ecrecover == signer</span>'
-          : '<span class="auth-badge unverified"><span>⚠</span> Unverified claim &middot; no cryptographic proof</span>'}
-      </div>
-      <div class="intent-grid">
-        ${auth.signer ? `<span class="k">Signer</span><span class="v">${esc(auth.signer)}</span>` : ''}
-        <span class="k">Intent Digest</span><span class="v">${esc(shortHex(auth.digest || intentHash || '', 20, 12))}</span>
-        ${auth.chain_id ? `<span class="k">Domain Chain</span><span class="v">${esc(String(auth.chain_id))}</span>` : ''}
-      </div>
-    </div>`;
+  return '<div class="card"><h3>Authorization</h3>' +
+    '<div style="margin-bottom:12px;">' +
+    (verified
+      ? '<span class="auth-badge verified">🛡 EIP-712 verified &middot; ecrecover == signer</span>'
+      : '<span class="auth-badge unverified">⚠ Unverified</span>') +
+    '</div><div class="intent-grid">' +
+    (auth.signer ? '<span class="k">Signer</span><span class="v">' + esc(auth.signer) + '</span>' : '') +
+    '<span class="k">Intent Digest</span><span class="v">' + esc(shortHex(auth.digest || intentHash || '', 20, 12)) + '</span>' +
+    (auth.chain_id ? '<span class="k">Domain Chain</span><span class="v">' + esc(String(auth.chain_id)) + '</span>' : '') +
+    '</div></div>';
 }
 
 function renderIntentSection(intent) {
@@ -620,106 +424,71 @@ function renderIntentSection(intent) {
     ['Deadline', intent.deadline != null ? esc(String(intent.deadline)) : '—'],
     ['Zero Residual', intent.require_zero_residual ? 'Yes' : 'No'],
   ];
-  return `
-    <div class="card">
-      <h3>Intent</h3>
-      <div class="intent-grid">
-        ${rows.map(([k, v]) => `<span class="k">${k}</span><span class="v">${v}</span>`).join('')}
-      </div>
-    </div>`;
+  return '<div class="card"><h3>Intent</h3><div class="intent-grid">' +
+    rows.map(([k, v]) => '<span class="k">' + k + '</span><span class="v">' + v + '</span>').join('') +
+    '</div></div>';
 }
 
 function renderViolationsSection(violations) {
-  return `
-    <div class="card">
-      <h3>Violations &middot; ${violations.length}</h3>
-      ${violations.length === 0
-        ? '<div class="no-violations">No violations detected — execution fully conforms to the signed authorization.</div>'
-        : violations.map(v => `
-          <div class="violation">
-            <span class="sev ${v.severity}">${v.severity}</span>
-            <span class="cat">${esc(v.category)}</span>
-            <span class="detail">${esc(v.detail)}</span>
-          </div>`).join('')}
-    </div>`;
+  return '<div class="card"><h3>Findings &middot; ' + violations.length + '</h3>' +
+    (violations.length === 0
+      ? '<div class="no-violations">No violations — execution fully conforms to the signed authorization.</div>'
+      : violations.map(v =>
+          '<div class="violation"><span class="sev ' + v.severity + '">' + v.severity + '</span>' +
+          '<span class="cat">' + esc(v.category) + '</span>' +
+          '<span class="detail">' + esc(v.detail) + '</span></div>').join('')) +
+    '</div>';
 }
 
 function renderAttestationSection(att, intentHash, isLive, chainId) {
   const ref = att.attestation_ref || '';
   const isDryrun = ref.startsWith('dryrun:');
   const actualRef = isDryrun ? ref.replace('dryrun:', '') : ref;
-
-  const etherscanBase = chainId === 11155111
-    ? 'https://sepolia.etherscan.io/tx/'
-    : 'https://etherscan.io/tx/';
-
-  let refHtml;
-  if (!ref) {
-    refHtml = '—';
-  } else if (isDryrun) {
-    refHtml = `<span class="dryrun-tag">Dryrun</span> <span style="font-family:var(--mono);font-size:0.78rem;color:var(--text-2);">${esc(shortHex(actualRef, 14, 8))}</span>`;
-  } else {
-    refHtml = `<span class="onchain-tag">On-chain</span> <a href="${etherscanBase}${esc(actualRef)}" target="_blank" rel="noopener">${esc(shortHex(actualRef, 10, 8))} ↗</a>`;
-  }
-
+  const base = chainId === 11155111 ? 'https://sepolia.etherscan.io/tx/' : 'https://etherscan.io/tx/';
   const registryAddr = '0x6719c69829740232f652b4b6bad8e6850922a2fb';
-  const registryLink = chainId === 11155111
-    ? `https://sepolia.etherscan.io/address/${registryAddr}`
-    : '#';
+  const registryLink = chainId === 11155111 ? 'https://sepolia.etherscan.io/address/' + registryAddr : '#';
 
-  return `
-    <div class="card">
-      <h3>ERC-8004 Attestation</h3>
-      <div class="attest-grid">
-        <span class="k">Request Hash</span><span class="v">${esc(shortHex(att.request_hash || intentHash || '', 20, 12))}</span>
-        <span class="k">Response</span><span class="v">${esc(String(att.response ?? '—'))} ${att.response != null ? '<span style="color:var(--muted);font-size:0.75rem;">(100 = compliant, 0 = violation)</span>' : ''}</span>
-        <span class="k">Tag</span><span class="v">${esc(att.tag || '—')}</span>
-        <span class="k">Attestation Ref</span><span class="v">${refHtml}</span>
-        <span class="k">Registry</span><span class="v"><a href="${registryLink}" target="_blank" rel="noopener" style="color:var(--accent-2);">${esc(shortAddr(registryAddr))} ↗</a> <span style="color:var(--text-3);font-size:0.75rem;">Sepolia</span></span>
-      </div>
-    </div>`;
+  let refHtml = '—';
+  if (ref) {
+    if (isDryrun) refHtml = '<span class="tag-chip dryrun">Dryrun</span> <span style="font-size:11px">' + esc(shortHex(actualRef, 14, 8)) + '</span>';
+    else refHtml = '<span class="tag-chip onchain">On-chain</span> <a href="' + base + esc(actualRef) + '" target="_blank" rel="noopener">' + esc(shortHex(actualRef, 10, 8)) + ' ↗</a>';
+  }
+  return '<div class="card"><h3>ERC-8004 Attestation</h3><div class="attest-grid">' +
+    '<span class="k">Request Hash</span><span class="v">' + esc(shortHex(att.request_hash || intentHash || '', 20, 12)) + '</span>' +
+    '<span class="k">Response</span><span class="v">' + esc(String(att.response ?? '—')) + (att.response != null ? ' <span style="color:var(--text-ghost);font-size:10px">(100 = compliant)</span>' : '') + '</span>' +
+    '<span class="k">Tag</span><span class="v">' + esc(att.tag || '—') + '</span>' +
+    '<span class="k">Attestation Ref</span><span class="v">' + refHtml + '</span>' +
+    '<span class="k">Registry</span><span class="v"><a href="' + registryLink + '" target="_blank" rel="noopener">' + esc(shortAddr(registryAddr)) + ' ↗</a> <span style="color:var(--text-ghost);font-size:10px">Sepolia</span></span>' +
+    '</div></div>';
 }
 
 function renderRawJson(rec) {
-  return `
-    <details style="margin-top:8px;cursor:pointer;">
-      <summary style="font-size:0.82rem;color:var(--muted);user-select:none;">Raw JSON</summary>
-      <pre style="margin-top:10px;background:var(--bg);color:var(--text-2);border:1px solid var(--border);border-radius:14px;padding:16px;font-size:0.72rem;line-height:1.6;overflow-x:auto;font-family:var(--mono);max-height:400px;overflow-y:auto;">${esc(JSON.stringify(rec, null, 2))}</pre>
-    </details>`;
+  return '<details style="margin-top:8px;cursor:pointer"><summary style="font-size:11px;color:var(--text-ghost);user-select:none">Raw JSON</summary>' +
+    '<pre style="margin-top:8px;background:var(--bg-root);color:var(--text-muted);border:1px solid var(--border-default);border-radius:var(--radius-md);padding:14px;font-size:10px;line-height:1.6;overflow:auto;font-family:var(--font-mono);max-height:400px">' +
+    esc(JSON.stringify(rec, null, 2)) + '</pre></details>';
 }
 
-/* ========== GATE ========== */
+/* GATE */
 function renderGatePanel() {
-  document.getElementById('detail-panel').innerHTML = `
-    <div class="card">
-      <h3>GATE — Pre-execution Check</h3>
-      <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">
-        Intercept transactions before they hit the chain. <strong>APPROVE</strong> lets it through, <strong>REJECT</strong> sends it back for the agent to self-correct.
-      </p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
-        <button onclick="loadGateExample('good')" style="padding:7px 13px;font-size:0.8rem;border:1px solid var(--border-2);border-radius:8px;background:var(--surface-2);color:var(--text-2);cursor:pointer;">▶ Example: compliant → APPROVE</button>
-        <button onclick="loadGateExample('drain')" style="padding:7px 13px;font-size:0.8rem;border:1px solid var(--border-2);border-radius:8px;background:var(--surface-2);color:var(--text-2);cursor:pointer;">▶ Example: drain → REJECT</button>
-      </div>
-      <div class="gate-form">
-        <div>
-          <label>Intent (JSON)</label>
-          <textarea id="gate-intent" placeholder='{"token_in":"0x...","token_out":"0x...","recipient":"0x...",...}'></textarea>
-        </div>
-        <div>
-          <label>Proposed TX (JSON)</label>
-          <textarea id="gate-tx" placeholder='{"to":"0x...","data":"0x...","value":"0"}'></textarea>
-        </div>
-        <button class="run-btn" onclick="runGate()">Run GATE Check</button>
-      </div>
-      <div id="gate-result" style="margin-top:20px;"></div>
-    </div>
-  `;
+  document.getElementById('detail-panel').innerHTML =
+    '<div class="card"><h3>GATE — Pre-execution Check</h3>' +
+    '<p style="color:var(--text-secondary);font-size:12px;margin-bottom:16px">' +
+    'Intercept transactions before they hit the chain. <strong>APPROVE</strong> lets it through, <strong>REJECT</strong> sends it back for the agent to self-correct.</p>' +
+    '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">' +
+    '<button class="btn-example" onclick="loadGateExample(\'good\')">▶ Example: compliant → APPROVE</button>' +
+    '<button class="btn-example" onclick="loadGateExample(\'drain\')">▶ Example: drain → REJECT</button></div>' +
+    '<div class="gate-form"><div><label>Intent (JSON)</label>' +
+    '<textarea id="gate-intent" placeholder=\'{"token_in":"0x...","token_out":"0x...","recipient":"0x...",...}\'></textarea></div>' +
+    '<div><label>Proposed TX (JSON)</label>' +
+    '<textarea id="gate-tx" placeholder=\'{"to":"0x...","data":"0x...","value":"0"}\'></textarea></div>' +
+    '<button class="btn-primary" onclick="runGate()">Run GATE Check</button></div>' +
+    '<div id="gate-result" style="margin-top:16px"></div></div>';
 }
 
-/* ----- one signed mandate; click an example to fill the form and run ----- */
 const GATE_EXAMPLE_INTENT = {"spec":{"allowed_targets":["0x2626664c2603336e57b271c5c0b26f421741e481","0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"],"allowed_spenders":["0x2626664c2603336e57b271c5c0b26f421741e481"],"token_in":"0x833589fcd6edb6e08f4c7c32d4f71b54bda02913","token_out":"0x4200000000000000000000000000000000000006","max_amount_in":"100000000","min_amount_out":"20000000000000000","recipient":"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266","deadline":4102444800,"require_zero_residual":true,"bounded_approval":true,"max_slippage_bps":50},"signature":"0xb04dab3f635b3a89a0075800c737468737fd6802dbfbc46570a36cbd575dd20f42f49bf04ca0bb2915b6f3920c3c79ab16f643fd07dfdd850ec7f809e854c12b1c","signer":"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266","domain":{"name":"EIV","version":"1","chainId":11155111}};
 const GATE_EXAMPLE_GOOD = {"to":"0x833589fcd6edb6e08f4c7c32d4f71b54bda02913","data":"0x095ea7b30000000000000000000000002626664c2603336e57b271c5c0b26f421741e4810000000000000000000000000000000000000000000000000000000002faf080","value":"0x0"};
 const GATE_EXAMPLE_DRAIN = {"to":"0x4200000000000000000000000000000000000006","data":"0xa9059cbb000000000000000000000000111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000470de4df820000","value":"0x0"};
+
 function loadGateExample(kind) {
   document.getElementById('gate-intent').value = JSON.stringify(GATE_EXAMPLE_INTENT, null, 2);
   document.getElementById('gate-tx').value = JSON.stringify(kind === 'drain' ? GATE_EXAMPLE_DRAIN : GATE_EXAMPLE_GOOD, null, 2);
@@ -734,200 +503,142 @@ async function runGate() {
   const intentStr = document.getElementById('gate-intent').value.trim();
   const txStr = document.getElementById('gate-tx').value.trim();
   const resultEl = document.getElementById('gate-result');
-
-  if (!intentStr || !txStr) {
-    resultEl.innerHTML = '<div style="color:var(--fail);font-size:0.9rem;">Please fill in both Intent and Proposed TX.</div>';
-    return;
-  }
-
+  if (!intentStr || !txStr) { resultEl.innerHTML = '<div style="color:var(--color-error);font-size:12px">Please fill both fields.</div>'; return; }
   let intent, proposedTx;
-  try { intent = JSON.parse(intentStr); } catch(e) {
-    resultEl.innerHTML = '<div style="color:var(--fail);font-size:0.9rem;">Invalid Intent JSON: ' + esc(e.message) + '</div>';
-    return;
-  }
-  try { proposedTx = JSON.parse(txStr); } catch(e) {
-    resultEl.innerHTML = '<div style="color:var(--fail);font-size:0.9rem;">Invalid Proposed TX JSON: ' + esc(e.message) + '</div>';
-    return;
-  }
-
-  resultEl.innerHTML = '<div style="color:var(--muted);font-size:0.9rem;">Running GATE check…</div>';
-
+  try { intent = JSON.parse(intentStr); } catch(e) { resultEl.innerHTML = '<div style="color:var(--color-error);font-size:12px">Invalid Intent JSON: ' + esc(e.message) + '</div>'; return; }
+  try { proposedTx = JSON.parse(txStr); } catch(e) { resultEl.innerHTML = '<div style="color:var(--color-error);font-size:12px">Invalid TX JSON: ' + esc(e.message) + '</div>'; return; }
+  resultEl.innerHTML = '<div style="color:var(--text-muted);font-size:12px">Running GATE check…</div>';
   try {
-    gateResult = await apiPost('/gate', { intent, proposed_tx: proposedTx });
-    renderGateResult(gateResult);
-  } catch(e) {
-    resultEl.innerHTML = '<div style="color:var(--fail);font-size:0.9rem;">GATE error: ' + esc(e.message) + '</div>';
-  }
+    const r = await apiPost('/gate', { intent, proposed_tx: proposedTx });
+    renderGateResult(r);
+  } catch(e) { resultEl.innerHTML = '<div style="color:var(--color-error);font-size:12px">GATE error: ' + esc(e.message) + '</div>'; }
 }
 
 function renderGateResult(r) {
   const decision = r.decision || '?';
   const partial = r.partial === true;
   const unchecked = r.unchecked || [];
-  const result = r.result || {};
-  const violations = result.violations || [];
+  const violations = (r.result || {}).violations || [];
 
-  let html = `
-    <div class="gate-banner ${decision}">
-      <span style="font-size:2rem;">${decision === 'APPROVE' ? '✓' : '✗'}</span>
-      <span>${decision}</span>
-      ${partial ? '<span class="sub" style="color:var(--warn);font-weight:600;">⚠ Partial check — honest labeling</span>' : ''}
-    </div>
-  `;
+  let html = '<div class="gate-banner ' + decision + '">' +
+    '<span style="font-size:1.5rem">' + (decision === 'APPROVE' ? '✓' : '✗') + '</span><span>' + decision + '</span>' +
+    (partial ? '<span class="sub" style="color:var(--color-warning);font-weight:600">⚠ Partial — honest labeling</span>' : '') +
+    '</div>';
 
   if (unchecked.length) {
-    html += `
-      <div class="card" style="margin-top:16px;background:var(--warn-soft);border-color:var(--warn-border);">
-        <h3 style="color:var(--warn);">Unchecked Items</h3>
-        <p style="color:var(--text-2);font-size:0.82rem;margin-bottom:8px;">Cannot verify before execution (must wait for on-chain confirmation):</p>
-        <ul class="unchecked-list">
-          ${unchecked.map(u => `<li>${esc(u)}</li>`).join('')}
-        </ul>
-      </div>
-    `;
+    html += '<div class="card" style="margin-top:14px;border-color:var(--color-warning-border)">' +
+      '<h3 style="color:var(--color-warning)">Unchecked Items</h3>' +
+      '<p style="color:var(--text-secondary);font-size:11px;margin-bottom:6px">Cannot verify before execution:</p>' +
+      '<ul class="unchecked-list">' + unchecked.map(u => '<li>' + esc(u) + '</li>').join('') + '</ul></div>';
   }
 
-  html += `
-    <div class="card" style="margin-top:16px;">
-      <h3>Violations &middot; ${violations.length}</h3>
-      ${violations.length === 0
-        ? '<div class="no-violations">No violations in pre-execution check.</div>'
-        : violations.map(v => `
-          <div class="violation">
-            <span class="sev ${v.severity}">${v.severity}</span>
-            <span class="cat">${esc(v.category)}</span>
-            <span class="detail">${esc(v.detail)}</span>
-          </div>`).join('')}
-    </div>
-  `;
+  html += '<div class="card" style="margin-top:14px"><h3>Findings &middot; ' + violations.length + '</h3>' +
+    (violations.length === 0
+      ? '<div class="no-violations">No violations in pre-execution check.</div>'
+      : violations.map(v =>
+          '<div class="violation"><span class="sev ' + v.severity + '">' + v.severity + '</span>' +
+          '<span class="cat">' + esc(v.category) + '</span>' +
+          '<span class="detail">' + esc(v.detail) + '</span></div>').join('')) +
+    '</div>';
 
   document.getElementById('gate-result').innerHTML = html;
 }
 
-/* ========== REPUTATION ========== */
+/* REPUTATION */
 function renderReputationPanel() {
-  document.getElementById('detail-panel').innerHTML = `
-    <div class="card">
-      <h3>Agent Reputation</h3>
-      <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">
-        Look up the trust profile for any agent address: trust score, risk level, and most frequent violation categories.
-      </p>
-      <div class="rep-input-row">
-        <input type="text" id="rep-addr" placeholder="0x..." />
-        <button onclick="lookupReputation()">Lookup</button>
-      </div>
-      <button onclick="loadRepExample()" style="margin-top:10px;padding:7px 13px;font-size:0.8rem;border:1px solid var(--border-2);border-radius:8px;background:var(--surface-2);color:var(--text-2);cursor:pointer;">▶ Example: the demo agent</button>
-      <div id="rep-result" style="margin-top:16px;"></div>
-    </div>
-  `;
+  document.getElementById('detail-panel').innerHTML =
+    '<div class="card"><h3>Agent Reputation</h3>' +
+    '<p style="color:var(--text-secondary);font-size:12px;margin-bottom:14px">' +
+    'Look up the trust profile for any agent address: trust score, risk level, and violation breakdown.</p>' +
+    '<div class="rep-input-row"><input type="text" id="rep-addr" placeholder="0x..." />' +
+    '<button class="btn-primary" onclick="lookupReputation()">Lookup</button></div>' +
+    '<button class="btn-example" onclick="loadRepExample()" style="margin-top:8px">▶ Example: demo agent</button>' +
+    '<div id="rep-result" style="margin-top:14px"></div></div>';
 }
 
 async function lookupReputation() {
   const addr = document.getElementById('rep-addr').value.trim();
   const resultEl = document.getElementById('rep-result');
-  if (!addr) {
-    resultEl.innerHTML = '<div style="color:var(--fail);font-size:0.9rem;">Please enter an agent address.</div>';
-    return;
-  }
-  resultEl.innerHTML = '<div style="color:var(--muted);font-size:0.9rem;">Fetching reputation…</div>';
+  if (!addr) { resultEl.innerHTML = '<div style="color:var(--color-error);font-size:12px">Enter an agent address.</div>'; return; }
+  resultEl.innerHTML = '<div style="color:var(--text-muted);font-size:12px">Fetching…</div>';
   try {
-    const rep = await apiGet(`/reputation/${encodeURIComponent(addr)}`);
-    renderReputationResult(rep);
-  } catch(e) {
-    resultEl.innerHTML = '<div style="color:var(--fail);font-size:0.9rem;">Error: ' + esc(e.message) + '</div>';
-  }
+    const rep = await apiGet('/reputation/' + encodeURIComponent(addr));
+    renderReputationResult(rep, addr);
+  } catch(e) { resultEl.innerHTML = '<div style="color:var(--color-error);font-size:12px">Error: ' + esc(e.message) + '</div>'; }
 }
 
-function renderReputationResult(rep) {
+function renderReputationResult(rep, addr) {
   const score = rep.trust_score;
   const level = rep.risk_level || 'unknown';
   const cats = rep.violations_by_category || {};
   const recent = rep.recent_verdicts || [];
-
   const scoreDisplay = score != null ? score : '—';
-  const scoreCls = level;
+
+  const circumference = 2 * Math.PI * 28;
+  const offset = score != null ? circumference * (1 - score / 100) : circumference;
+  let ringColor = 'rgba(255,255,255,0.06)';
+  if (score != null) {
+    if (score >= 80) ringColor = '#34D399';
+    else if (score >= 40) ringColor = '#FBBF24';
+    else ringColor = '#EF4444';
+  }
 
   const catRows = Object.entries(cats).map(([cat, count]) => {
     const maxCount = Math.max(...Object.values(cats), 1);
     const pct = Math.round(count / maxCount * 100);
-    return `
-      <div class="cat-row">
-        <span class="cat-name">${esc(cat)}</span>
-        <span class="cat-count">${count}</span>
-      </div>
-      <div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div>
-    `;
+    return '<div class="cat-row"><span class="cat-name">' + esc(cat) + '</span><span class="cat-count">' + count + '</span></div>' +
+      '<div class="bar-bg"><div class="bar-fill" style="width:' + pct + '%"></div></div>';
   }).join('');
 
-  document.getElementById('rep-result').innerHTML = `
-    <div class="card" style="background:var(--surface-2);">
-      <div style="display:flex;align-items:center;gap:16px;">
-        <div class="rep-score-big ${scoreCls}">${scoreDisplay}</div>
-        <div>
-          <div style="font-size:1.2rem;font-weight:700;">Trust Score</div>
-          <span class="auth-badge ${level === 'low' ? 'verified' : level === 'unknown' ? '' : 'unverified'}" style="margin-top:4px;font-size:0.75rem;">
-            Risk: ${level.toUpperCase()}
-          </span>
-        </div>
-      </div>
-      <div class="rep-stats-grid">
-        <div class="rep-stat"><div class="num">${rep.total_validations || 0}</div><div class="lbl">Total</div></div>
-        <div class="rep-stat"><div class="num" style="color:var(--pass);">${rep.pass_count || 0}</div><div class="lbl">Pass</div></div>
-        <div class="rep-stat"><div class="num" style="color:var(--fail);">${rep.fail_count || 0}</div><div class="lbl">Fail</div></div>
-        <div class="rep-stat"><div class="num">${rep.pass_rate != null ? rep.pass_rate + '%' : '—'}</div><div class="lbl">Pass Rate</div></div>
-      </div>
-    </div>
-
-    ${Object.keys(cats).length ? `
-      <div class="card" style="margin-top:16px;">
-        <h3>Violations by Category</h3>
-        <p style="color:var(--muted);font-size:0.8rem;margin-bottom:10px;">Most frequent violation types for this agent:</p>
-        <div class="rep-cats">${catRows}</div>
-      </div>
-    ` : ''}
-
-    ${recent.length ? `
-      <div class="card" style="margin-top:16px;">
-        <h3>Recent Verdicts &middot; Last ${recent.length}</h3>
-        ${recent.map(r => `
-          <div class="recent-item">
-            <span class="badge ${r.verdict}">${r.verdict}</span>
-            <span style="font-family:var(--mono);font-size:0.75rem;color:var(--muted);">${esc(r.validation_id || '')}</span>
-            <span style="font-size:0.75rem;color:var(--muted);margin-left:auto;">${esc(r.created_at || '')}</span>
-          </div>
-        `).join('')}
-      </div>
-    ` : ''}
-  `;
+  document.getElementById('rep-result').innerHTML =
+    '<div class="agent-card">' +
+      '<div class="agent-ring"><svg viewBox="0 0 64 64" width="64" height="64">' +
+        '<circle cx="32" cy="32" r="28" stroke="rgba(255,255,255,0.06)" stroke-width="4" fill="none"/>' +
+        '<circle cx="32" cy="32" r="28" stroke="' + ringColor + '" stroke-width="4" fill="none" ' +
+        'stroke-dasharray="' + circumference.toFixed(2) + '" stroke-dashoffset="' + offset.toFixed(2) + '" ' +
+        'stroke-linecap="round" transform="rotate(-90 32 32)" class="ring-fill"/>' +
+        '<text x="32" y="32" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="700" fill="#E8E4E0" font-family="Inter,sans-serif">' + scoreDisplay + '</text>' +
+      '</svg></div>' +
+      '<div class="agent-info">' +
+        '<div class="agent-addr">' + esc(addr) + '</div>' +
+        '<div class="agent-meta">' +
+          '<span class="auth-badge ' + (level === 'low' ? 'verified' : 'unverified') + '" style="font-size:10px">Risk: ' + level.toUpperCase() + '</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="rep-stats-grid">' +
+      '<div class="rep-stat"><div class="num">' + (rep.total_validations || 0) + '</div><div class="lbl">Total</div></div>' +
+      '<div class="rep-stat"><div class="num" style="color:var(--color-success)">' + (rep.pass_count || 0) + '</div><div class="lbl">Pass</div></div>' +
+      '<div class="rep-stat"><div class="num" style="color:var(--color-error)">' + (rep.fail_count || 0) + '</div><div class="lbl">Fail</div></div>' +
+      '<div class="rep-stat"><div class="num">' + (rep.pass_rate != null ? rep.pass_rate + '%' : '—') + '</div><div class="lbl">Rate</div></div>' +
+    '</div>' +
+    (Object.keys(cats).length ?
+      '<div class="card" style="margin-top:14px"><h3>Violations by Category</h3><div class="rep-cats">' + catRows + '</div></div>' : '') +
+    (recent.length ?
+      '<div class="card" style="margin-top:14px"><h3>Recent Verdicts &middot; ' + recent.length + '</h3>' +
+      recent.map(r =>
+        '<div class="recent-item"><span class="badge ' + r.verdict + '">' + r.verdict + '</span>' +
+        '<span style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted)">' + esc(r.validation_id || '') + '</span>' +
+        '<span style="font-size:10px;color:var(--text-ghost);margin-left:auto">' + esc(r.created_at || '') + '</span></div>'
+      ).join('') + '</div>' : '');
 }
 
-/* ---------- Utils ---------- */
-function esc(s) {
-  return String(s ?? '').replace(/[&<>"']/g, c =>
-    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-}
-function shortHex(s, head, tail) {
-  head = head || 10; tail = tail || 6;
-  s = String(s ?? '');
-  return s.length > head + tail + 2 ? s.slice(0, head) + '…' + s.slice(-tail) : s;
-}
-function shortAddr(a) {
-  const s = String(a ?? '—');
-  return s.length > 16 ? s.slice(0, 7) + '…' + s.slice(-5) : s;
-}
+/* UTILS */
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c])); }
+function shortHex(s, head, tail) { head=head||10;tail=tail||6;s=String(s??'');return s.length>head+tail+2?s.slice(0,head)+'…'+s.slice(-tail):s; }
+function shortAddr(a) { const s=String(a??'—');return s.length>16?s.slice(0,7)+'…'+s.slice(-5):s; }
 
-/* ---------- Init ---------- */
+/* INIT */
 (async function init() {
   const ok = await checkHealth();
   if (!ok) {
     document.getElementById('list').innerHTML =
-      '<div style="padding:24px;font-size:0.85rem;color:var(--text-3);line-height:1.7;">API unreachable<br><br>Start with:<br><code style="color:var(--text-2);">python -m eiv.api</code></div>';
+      '<div style="padding:20px;font-size:12px;color:var(--text-ghost);line-height:1.7">API unreachable<br><br>Start with:<br><code style="color:var(--text-secondary)">python -m eiv.api</code></div>';
     return;
   }
   await loadList();
   const first = document.querySelector('#list .list-item');
   if (first) first.click();
-
   setInterval(async () => { await checkHealth(); await loadList(); }, 6000);
 })();
 </script>
