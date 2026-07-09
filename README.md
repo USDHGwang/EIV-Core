@@ -40,8 +40,9 @@ permissions move outside what you signed — regardless of which contract was in
 
 The same deterministic check can run **before** execution (simulate the proposed
 transaction, then block it) or **after** (attest it, building the agent's
-verifiable track record). Verdicts can be attested through **ERC-8004**, making
-the track record portable across ecosystems.
+verifiable track record). Verdicts can be attested on-chain through a minimal
+**ERC-8004-style** validation registry (a subset of the spec — see
+[contracts/](contracts/)), keeping the track record portable across ecosystems.
 
 ## Zero dependencies — including the cryptography
 
@@ -90,7 +91,8 @@ is the deterministic verification core.
 - **eiv-core** (this project): the off-chain validation service — deterministic
   engine, EIP-712 verification, live trace reconstruction, attestation signing,
   HTTP API, and the embedded console.
-- **contracts/** (in this repo): a minimal ERC-8004 ValidationRegistry in
+- **contracts/** (in this repo): a minimal ERC-8004-style ValidationRegistry
+  (implements the response/read subset of the spec, not the full interface) in
   Solidity 0.8.19, compiled with standalone solc-js (no Hardhat) and deployed
   by `contracts/deploy_registry.py` using eiv-core's own stdlib signing stack.
   Deployed on Sepolia; deployment record in `contracts/DEPLOYMENTS.md`. After
@@ -103,7 +105,7 @@ is the deterministic verification core.
 bundled scenarios (a clean swap, a dangling-allowance drain, an unauthorized
 target, and a replay of the May 2026 Grok/Bankr incident), a live validation
 feed, and a full drill-down per record — signature verification outcome,
-violations by category, the canonical signed intent, and the ERC-8004
+violations by category, the canonical signed intent, and the on-chain
 attestation payload. It runs offline; no CDN, fonts, or build step.
 
 One scenario validates the **real drain transaction** ([0x6fc7…739a on Base
@@ -133,8 +135,9 @@ for downstream consumers (dashboard, attestation):
 - Severity: `FAIL` (violates a field stated in the signed spec),
   `WARN-SAFETY` (risky but not prohibited by the spec),
   `WARN-SPEC` (the spec itself is underspecified).
-- Categories cover target, recipient, authorization expansion, amount/slippage,
-  deadline, residual allowance, etc.
+- Categories cover target, recipient, authorization expansion, amount bounds,
+  deadline, residual allowance, etc. (`max_slippage_bps` is part of the signed
+  spec but not yet enforced as its own predicate — amount bounds are).
 - Amounts are strings in JSON (uint256 exceeds the JavaScript Number safe range).
 
 ## HTTP API
@@ -278,7 +281,7 @@ network by `python -m eiv.selftest` (parts D10/D11).
 ## Implementation status
 
 EIV isolates external dependencies behind replaceable interfaces. As of v0.3.0
-all production implementations are real and covered by the selftest (174
+all production implementations are real and covered by the selftest (184
 checks); the reference implementations remain available for isolation testing
 and offline demos.
 
@@ -293,7 +296,7 @@ the Python SDK.
 |---|---|---|
 | `EIP712Verifier` | `Eip712Verifier` — rebuilds the EIP-712 typed-data digest from the spec, ecrecover, compares the recovered address to the declared signer. Tampered content or a wrong signer is rejected (HTTP 401). **Active by default.** | `StubEIP712Verifier` |
 | `ChainAdapter` | `RpcChainAdapter` — reconstructs the trace from a live node over JSON-RPC: receipt, ERC-20 Transfer/Approval logs, block timestamp, and post-execution allowance reads via `eth_call`. Enabled with `RPC_URL`. | `MockChainAdapter` (fixtures) |
-| `AttestationSink` | `OnChainAttestationSink` — ABI-encodes `validationResponse`, signs an EIP-1559 transaction, and broadcasts it to the ERC-8004 registry. Enabled with `EIV_VALIDATION_REGISTRY_ADDRESS` + `ATTESTER_PRIVATE_KEY`; `EIV_ATTEST_DRY_RUN=1` signs without broadcasting. | `StubAttestationSink` |
+| `AttestationSink` | `OnChainAttestationSink` — ABI-encodes `validationResponse`, signs an EIP-1559 transaction, and broadcasts it to the ERC-8004-style registry. Enabled with `EIV_VALIDATION_REGISTRY_ADDRESS` + `ATTESTER_PRIVATE_KEY`; `EIV_ATTEST_DRY_RUN=1` signs without broadcasting. | `StubAttestationSink` |
 
 Swapping implementations requires no change to the orchestration service, API,
 or validation engine; composition is environment-driven (see `.env.example`).
@@ -322,7 +325,7 @@ This path is not theoretical — it has run end-to-end on Sepolia:
 
 | | |
 |---|---|
-| `EIVValidationRegistry` (ERC-8004 ValidationRegistry) | [`0x6719c69829740232f652b4b6bad8e6850922a2fb`](https://sepolia.etherscan.io/address/0x6719c69829740232f652b4b6bad8e6850922a2fb) |
+| `EIVValidationRegistry` (ERC-8004-style ValidationRegistry, spec subset) | [`0x6719c69829740232f652b4b6bad8e6850922a2fb`](https://sepolia.etherscan.io/address/0x6719c69829740232f652b4b6bad8e6850922a2fb) |
 | First real attestation (`OnChainAttestationSink`) | [`0xbc50b963d8f9c9f5f34ba7764f510e0f6cddf4d67a4b927584170bdac40ec6f0`](https://sepolia.etherscan.io/tx/0xbc50b963d8f9c9f5f34ba7764f510e0f6cddf4d67a4b927584170bdac40ec6f0) (block 11041392, 145,626 gas, `ValidationResponse` event emitted) |
 
 The attested `requestHash` is the intent's EIP-712 digest

@@ -232,6 +232,24 @@ def part_c() -> None:
         == envelope["signer"].lower(),
         "sign_intent -> recover_intent_signer round-trips",
     )
+    # HIGH-1 regression: the high-s counterpart (r, N-s, v^1) of a valid
+    # signature recovers the same signer, so accepting it gives one
+    # authorization two valid encodings (malleability). EIP-2 low-s rule:
+    # reject at parse and at verify.
+    from eiv.eth import N as _curve_n
+    from eiv.eth import parse_signature_hex, signature_to_hex
+    m_recid, m_r, m_s = parse_signature_hex(envelope["signature"])
+    high_s_sig = signature_to_hex(m_recid ^ 1, m_r, _curve_n - m_s)
+    try:
+        parse_signature_hex(high_s_sig)
+        check(False, "parse_signature_hex rejects a high-s signature")
+    except ValueError:
+        check(True, "parse_signature_hex rejects a high-s signature")
+    check(
+        not verifier.verify(spec, high_s_sig, envelope["signer"]),
+        "high-s malleated signature fails verification",
+    )
+
     tampered = dict(intent["spec"], max_amount_in="999999")
     check(
         not verifier.verify(build_intent_spec(tampered), intent["signature"], intent["signer"]),

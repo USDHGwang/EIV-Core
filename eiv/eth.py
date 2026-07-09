@@ -253,6 +253,11 @@ def parse_signature_hex(sig: str) -> tuple:
     recid = v - 27 if v >= 27 else v
     if recid not in (0, 1):
         raise ValueError(f"unsupported v value {v}")
+    if s > N // 2:
+        # EIP-2 low-s rule: the high-s counterpart (r, N-s, v^1) recovers the
+        # same signer, so accepting it would give one authorization two valid
+        # signature encodings (malleability).
+        raise ValueError("high-s signature rejected (EIP-2 low-s required)")
     return recid, r, s
 
 

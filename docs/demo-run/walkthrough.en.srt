@@ -1,0 +1,35 @@
+1
+00:00:03,000 --> 00:00:07,000
+AI agents move real money on-chain — and they get drained. EIV keeps them honest, deterministically.
+
+2
+00:00:07,200 --> 00:00:12,200
+The user signs an authorization in plain language; GLM-5.1 turns it into a strict spec. The signature is the only source of truth.
+
+3
+00:00:12,400 --> 00:00:16,000
+Act 1. The agent is instructed to approve an unlimited allowance.
+
+4
+00:00:16,200 --> 00:00:20,000
+But GLM-5.1 reads the signed mandate and adjusts to a bounded approval on its own — the signature wins over the instruction.
+
+5
+00:00:20,200 --> 00:00:26,000
+Act 2. A prompt injection tries to redirect the output to an attacker. The agent refuses it on its own.
+
+6
+00:00:26,400 --> 00:00:30,000
+Act 3. Now the agent is fully compromised and submits the drain directly.
+
+7
+00:00:30,200 --> 00:00:33,200
+EIV rejects it deterministically — it never trusts the model.
+
+8
+00:00:33,600 --> 00:00:39,800
+Every verdict is attestable on-chain. A real attestation is live on Sepolia via ERC-8004.
+
+9
+00:00:40,000 --> 00:00:46,000
+The model proposes. EIV decides. Deterministic, reproducible, zero dependencies.
