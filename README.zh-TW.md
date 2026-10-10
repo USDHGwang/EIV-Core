@@ -30,7 +30,7 @@ EIV 驗的是**結果對不對得上你的 invariant** —— 你的資金或權
   就繞過了 agent 自己的安全層。EIV 確定性地審鏈上結果，與 prompt 和 agent 的推理無關。
 
 同一個確定性檢查可以放在執行**前**（模擬提案交易 → 擋下）或執行**後**（attest → 累積 agent 的
-可驗證履歷）。判定可透過 **ERC-8004** attest，讓信任紀錄跨生態可攜帶。
+可驗證履歷）。判定可透過極簡的 **ERC-8004 風格** validation registry（只實作規格的子集，見 [contracts/](contracts/)）attest，讓信任紀錄跨生態可攜帶。
 
 ## 零依賴 —— 包括密碼學
 
@@ -74,7 +74,7 @@ RLP、EIP-1559 交易簽名、JSON-RPC、HTTP server、web console —— 全部
 
 - **eiv-core**（本專案）：鏈下驗證服務 —— 確定性引擎、EIP-712 驗章、即時 trace 重建、
   attestation 簽名、HTTP API 與內建 console。
-- **contracts/**（本 repo 內）：極簡 ERC-8004 ValidationRegistry（Solidity 0.8.19），
+- **contracts/**（本 repo 內）：極簡 ERC-8004 風格 ValidationRegistry（只實作規格中 response/read 的子集，不是完整介面；Solidity 0.8.19），
   以 standalone solc-js 編譯（不用 Hardhat），由 `contracts/deploy_registry.py` 透過
   eiv-core 自己的 stdlib 簽章堆疊部署。已部署於 Sepolia；部署記錄在
   `contracts/DEPLOYMENTS.md`。部署後將地址設定到 `EIV_VALIDATION_REGISTRY_ADDRESS`
@@ -85,7 +85,7 @@ RLP、EIP-1559 交易簽名、JSON-RPC、HTTP server、web console —— 全部
 `python -m eiv.api` 會在 `/` 提供零依賴的 web console：
 內建情境（乾淨 swap、殘留 allowance 抽乾、未授權目標、2026 年 5 月 Grok/Bankr 事件重演）、
 即時驗證列表、每筆 record 的完整下鑽 —— 簽章驗證結果、依類別列出的違規、canonical
-簽章 intent、ERC-8004 attestation payload。完全離線可用；沒有 CDN、字型或 build step。
+簽章 intent、鏈上 attestation payload。完全離線可用；沒有 CDN、字型或 build step。
 
 其中一個情境驗的是**真實的盜領交易**（[Base mainnet 上的 0x6fc7…739a](https://basescan.org/tx/0x6fc7eb7da9379383efda4253e4f599bbc3a99afed0468eabfe18484ec525739a)，
 3,000,000,000 DRB ≈ $175K 流向攻擊者）。以 `RPC_URL=https://mainnet.base.org` 啟動服務，
@@ -230,7 +230,7 @@ SQLite store（`EIV_STORE_BACKEND=sqlite`）、reputation API、Python SDK。
 |---|---|---|
 | `EIP712Verifier` | `Eip712Verifier` —— 從 spec 重建 EIP-712 typed-data digest、ecrecover、比對宣告 signer。內容被竄改或 signer 不符即拒絕（HTTP 401）。**預設啟用。** | `StubEIP712Verifier` |
 | `ChainAdapter` | `RpcChainAdapter` —— 透過 JSON-RPC 從真節點重建 trace：receipt、ERC-20 Transfer/Approval logs、區塊時間戳、`eth_call` 讀執行後 allowance。以 `RPC_URL` 啟用。 | `MockChainAdapter`（fixtures） |
-| `AttestationSink` | `OnChainAttestationSink` —— ABI 編碼 `validationResponse`、簽 EIP-1559 交易、廣播到 ERC-8004 registry。以 `EIV_VALIDATION_REGISTRY_ADDRESS` + `ATTESTER_PRIVATE_KEY` 啟用；`EIV_ATTEST_DRY_RUN=1` 只簽不播。 | `StubAttestationSink` |
+| `AttestationSink` | `OnChainAttestationSink` —— ABI 編碼 `validationResponse`、簽 EIP-1559 交易、廣播到 ERC-8004 風格的 registry。以 `EIV_VALIDATION_REGISTRY_ADDRESS` + `ATTESTER_PRIVATE_KEY` 啟用；`EIV_ATTEST_DRY_RUN=1` 只簽不播。 | `StubAttestationSink` |
 
 替換實作不需更動編排服務、API 或驗證引擎；組裝由環境變數驅動（見 `.env.example`）。
 
@@ -256,7 +256,7 @@ SQLite store（`EIV_STORE_BACKEND=sqlite`）、reputation API、Python SDK。
 
 | | |
 |---|---|
-| `EIVValidationRegistry`（ERC-8004 ValidationRegistry） | [`0x6719c69829740232f652b4b6bad8e6850922a2fb`](https://sepolia.etherscan.io/address/0x6719c69829740232f652b4b6bad8e6850922a2fb) |
+| `EIVValidationRegistry`（ERC-8004 風格 ValidationRegistry，規格子集） | [`0x6719c69829740232f652b4b6bad8e6850922a2fb`](https://sepolia.etherscan.io/address/0x6719c69829740232f652b4b6bad8e6850922a2fb) |
 | 第一筆真實 attestation（`OnChainAttestationSink`） | [`0xbc50b963d8f9c9f5f34ba7764f510e0f6cddf4d67a4b927584170bdac40ec6f0`](https://sepolia.etherscan.io/tx/0xbc50b963d8f9c9f5f34ba7764f510e0f6cddf4d67a4b927584170bdac40ec6f0)（block 11041392，145,626 gas，已發出 `ValidationResponse` event） |
 
 attest 上鏈的 `requestHash` 就是 intent 的 EIP-712 digest
@@ -276,7 +276,7 @@ eiv-core/
 │   ├── eip712.py           # IntentSpec typed-data digest、簽署、驗證
 │   ├── intent_source.py    # IntentSource 與 EIP712Verifier 介面
 │   ├── chain_adapter.py    # MockChainAdapter + RpcChainAdapter（即時 JSON-RPC）
-│   ├── attestation.py      # StubAttestationSink + OnChainAttestationSink（ERC-8004）
+│   ├── attestation.py      # StubAttestationSink + OnChainAttestationSink（ERC-8004 風格）
 │   ├── service.py          # ValidatorService 編排（run + gate）
 │   ├── store.py            # ValidationStore（JSON）+ SqliteValidationStore（WAL、索引查詢）
 │   ├── reputation.py       # 驗證歷史 -> 信任檔案聚合
@@ -289,7 +289,7 @@ eiv-core/
 │   ├── selftest.py         # 自動化測試（含公開密碼學向量）
 │   ├── mcp_tool.py         # MCP 工具（選擇性）
 │   └── fixtures/           # 已簽章範例 intent、execution traces、scenarios
-├── contracts/              # ERC-8004 ValidationRegistry（Solidity）+ stdlib 部署工具
+├── contracts/              # ERC-8004 風格 ValidationRegistry（Solidity）+ stdlib 部署工具
 ├── docs/                   # 設計文件
 ├── pyproject.toml
 ├── .env.example

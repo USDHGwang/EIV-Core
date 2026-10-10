@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+title: "EIV-Core: Execution-Integrity Validator"
+type: software
+authors:
+  - given-names: Hao-Wei
+    family-names: Wang
+    affiliation: National Taitung University
+version: 0.3.0
+license: MIT
+repository-code: "https://github.com/USDHGwang/EIV-Core"
+abstract: >-
+  EIV-Core is an off-chain validator that checks whether an AI agent's on-chain
+  transaction stayed within the intent the user signed (an EIP-712 IntentSpec).
+  The check is deterministic and uses only the Python standard library,
+  including the cryptography. It returns a verdict with the violated
+  constraints, can gate a proposed transaction before execution, and can
+  record the verdict to an ERC-8004-style validation registry.
+keywords:
+  - AI agents
+  - authorization
+  - EIP-712
+  - ERC-8004
+  - signed intent
+  - on-chain validation

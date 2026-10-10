@@ -346,7 +346,7 @@ eiv-core/
 │   ├── eip712.py           # IntentSpec typed-data digest, signing, verification
 │   ├── intent_source.py    # IntentSource and the EIP712Verifier interface
 │   ├── chain_adapter.py    # MockChainAdapter + RpcChainAdapter (live JSON-RPC)
-│   ├── attestation.py      # StubAttestationSink + OnChainAttestationSink (ERC-8004)
+│   ├── attestation.py      # StubAttestationSink + OnChainAttestationSink (ERC-8004-style)
 │   ├── service.py          # ValidatorService orchestration (run + gate)
 │   ├── store.py            # ValidationStore (JSON) + SqliteValidationStore (WAL, indexed)
 │   ├── reputation.py       # trust-profile aggregation over validation history
@@ -359,7 +359,7 @@ eiv-core/
 │   ├── selftest.py         # automated tests (incl. published crypto vectors)
 │   ├── mcp_tool.py         # MCP tool (optional)
 │   └── fixtures/           # signed sample intents, execution traces, scenarios
-├── contracts/              # ERC-8004 ValidationRegistry (Solidity) + stdlib deploy tooling
+├── contracts/              # ERC-8004-style ValidationRegistry (Solidity) + stdlib deploy tooling
 ├── docs/                   # design documents
 ├── pyproject.toml
 ├── .env.example
@@ -372,4 +372,4 @@ MIT License — see [LICENSE](LICENSE).
 
 ## Team
 
-AI × Web3 Agentic Builders Hackathon · Z.AI track.
+AI × Web3 School Hackathon (LXDAO × ETHPanda) · Z.AI track.
